@@ -3556,3 +3556,608 @@ void Widget::paintEvent(QPaintEvent *)
 }
 ```
 
+
+
+
+
+## 33、视频33：抗锯齿和坐标系变换
+
+### 1、平移
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    // 1.抗锯齿：边缘平滑 Antialiasing，translate
+//    QPen pen(QColor(255, 0, 0));
+    painter.setPen(QPen(Qt::red, 15));
+    painter.drawEllipse(QPoint(200, 150), 100, 100);
+
+    painter.setRenderHints(QPainter::Antialiasing); // 抗锯齿操作
+    painter.translate(200, 0); // 偏移
+    painter.drawEllipse(QPoint(200, 150), 100, 100); 
+}
+```
+
+<img src="Qt笔记.assets/image-20240119160217481.png" alt="image-20240119160217481" style="zoom:80%;" />
+
+
+
+### 2、旋转
+
+```c++
+// 2.旋转 rotate
+painter.setPen(QPen(Qt::red, 10));
+painter.drawLine(QPoint(10, 10), QPoint(100, 100));
+painter.save(); // 保存一下当前的设置
+painter.translate(200, 0);
+painter.rotate(90); // 顺时针旋转90度
+painter.setPen(QPen(Qt::blue, 10));
+painter.drawLine(QPoint(10, 10), QPoint(100, 100));
+painter.restore(); // 恢复到之前的状态
+```
+
+<img src="Qt笔记.assets/image-20240119160842436.png" alt="image-20240119160842436" style="zoom:80%;" />
+
+
+
+### 3、缩放
+
+```c++
+// 3.缩放 scale
+painter.setPen(QPen(Qt::red));
+painter.setBrush(Qt::yellow);
+painter.drawRect(50, 50, 50, 50);
+painter.save();
+painter.scale(1.5, 2);
+painter.setBrush(Qt::green);
+painter.drawRect(50, 50, 50, 50);
+painter.restore();
+```
+
+<img src="Qt笔记.assets/image-20240119161430125.png" alt="image-20240119161430125" style="zoom:80%;" />
+
+
+
+### 4、扭曲
+
+```c++
+    // 4.扭曲 shear
+    painter.setPen(QPen(Qt::blue));
+    painter.setBrush(Qt::yellow);
+    painter.drawRect(50, 50, 50, 50);
+    painter.save();
+    painter.shear(0.5, 0); // 左上角 50*1.5 = 75， 右下角 100*1.5 = 150
+    painter.setBrush(Qt::gray);
+    painter.drawRect(50, 50, 50, 50);
+    painter.restore();
+```
+
+<img src="Qt笔记.assets/image-20240119162049179.png" alt="image-20240119162049179" style="zoom:80%;" />
+
+
+
+
+
+## 34、视频34：手动调用绘图事件处理函数
+
+### 1、实现目的
+
+手动调用绘图事件
+
+### 2、具体步骤
+
+2.1、前期准备
+
+头文件公有成员
+
+```c++
+void paintEvent(QPaintEvent *);
+```
+
+源文件包含头文件
+
+```c++
+#include <QPainter>
+```
+
+
+
+2.2	绘制一个始终位于界面中心的圆
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this); 
+    painter.setRenderHints(QPainter::Antialiasing); // 抗锯齿
+    painter.translate(width()/2, height()/2); //  使坐标中心位于整个界面的中心，无论如何放大/缩小界面
+    painter.drawEllipse(QPoint(0, 0), 120, 120); // 半径为120
+}
+```
+
+运行结果：
+
+<img src="Qt笔记.assets/image-20240119204040137.png" alt="image-20240119204040137" style="zoom:80%;" />
+
+
+
+2.3 设置旋转角度
+
+头文件私有变量
+
+```c++
+int angle;
+```
+
+源文件Widget构造函数：
+
+```
+angle = 0; // 角度初始化
+```
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    painter.setRenderHints(QPainter::Antialiasing); // 抗锯齿
+    painter.translate(width()/2, height()/2); //  使坐标中心位于整个界面的中心，无论如何放大/缩小界面
+    painter.drawEllipse(QPoint(0, 0), 120, 120); //
+    painter.rotate(angle); // 旋转
+    painter.drawLine(QPoint(0, 0), QPoint(100, 100));
+}
+```
+
+
+
+2.4	设置角度变化
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    angle += 10;
+    if(angle == 360)
+        angle =0;
+    
+    QPainter painter(this);
+
+    painter.setRenderHints(QPainter::Antialiasing); // 抗锯齿
+    painter.translate(width()/2, height()/2); //  使坐标中心位于整个界面的中心，无论如何放大/缩小界面
+    painter.drawEllipse(QPoint(0, 0), 120, 120); //
+    painter.rotate(angle); // 旋转
+    painter.drawLine(QPoint(0, 0), QPoint(100, 0));
+}
+```
+
+但没有连续变化，如下图，与上图对比，只变化一次，因此设计一个定时器来实现连续变化
+
+![image-20240119205041540](Qt笔记.assets/image-20240119205041540-17056686425502.png)
+
+
+
+2.5	设置定时器
+
+```c++
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+    angle = 0;
+    QTimer *timer = new QTimer(this);
+    timer->start(1000);
+    connect(timer, &QTimer::timeout, this, [&](){update();});
+}
+```
+
+为什么不使用repaint()函数
+
+重新调用 paintEvent() 以直接重新绘制小部件，除非禁用更新或小部件被隐藏。 我们建议只在需要立即重新绘制的情况下使用 repaint()，例如在动画期间。在几乎所有情况下，update() 更好，因为它允许Qt进行速度优化并最小化闪烁。 警告：如果在可能被从 paintEvent() 中调用的函数中调用 repaint()，可能会导致无限递归。update() 函数永远不会引起递归。
+
+### 3、运行结果
+
+![](Qt笔记.assets/笔记34.gif)
+
+
+
+
+
+## 35、视频35：绘制文字和路径
+
+### 1、本节内容
+
+### 2、具体步骤
+
+2.1	前期准备
+
+头文件：
+
+```c++
+void paintEvent(QPaintEvent *);
+```
+
+源文件：
+
+```c++
+#include <QPainter>
+void Widget::paintEvent(QPaintEvent *)
+{    
+}
+```
+
+
+
+2.2	具体代码
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    QFont font("Noto Sans CJK SC Black", 20, QFont::Bold, true); // 设置字体类型、大小、黑体、斜体
+//    QFont font("Courier 10 Pitch", 50, QFont::Bold, true);
+
+    font.setUnderline(true); // 设置下划线
+
+    painter.setFont(font); // 设置画笔
+    painter.setPen(Qt::blue); // 设置画笔颜色
+    painter.drawText(50, 50, "I love you, Rick!");
+}
+
+```
+
+
+
+2.3	运行结果
+
+<img src="Qt笔记.assets/image-20240120155321033.png" alt="image-20240120155321033" style="zoom:80%;" />
+
+
+
+2.4	QPainterPath
+
+QPainterPath 是  Qt  框架中的一个类，用于描述和操作 2D 图形路径。它提供了一种方便的方式来创建和管理路径，这些路径可以用于绘制、剪切和其他图形操作。
+
+类似于容器，存储的当前的绘画设置。
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPainterPath path;
+
+    path.moveTo(50, 250);
+    path.lineTo(50, 200);
+    path.lineTo(100, 100);
+    path.addEllipse(QPoint(100, 100), 30, 30);
+    painter.setPen(Qt::red);
+    painter.drawPath(path);
+
+    path.translate(200, 0);
+    painter.setPen(Qt::blue);
+    painter.drawPath(path);
+}
+```
+
+### 3、运行结果 
+
+![image-20240120161411208](Qt笔记.assets/image-20240120161411208-17057384521032.png)
+
+
+
+
+
+## 36、视频36：绘图设备QPixmap_QImage
+
+QWidget
+
+QPixmap：图片类，主要用于显示图片，对于图片的显示做了优化处理，和平台有关。
+
+QImage：图片类，图片不依赖于平台，多用于图片的传输，可以做像素级的修改。
+
+QBitmap
+
+QPicture
+
+### 1、QPixmap
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QPainter>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+    
+    // 绘图设备 QPixmap
+    QPixmap pix(400, 300); // 设置图像像素 400 * 300
+    pix.fill(Qt::white); // 背景颜色设置，默认黑色
+    QPainter painter(&pix); 
+    
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+
+
+```
+QPainter painter(&pix); 
+```
+
+原型：QPainter::QPainter([QPaintDevice](qpaintdevice.html) **device*)，其中 QPaintDevice 可以是以下类型：
+
+![image-20240122170231501](Qt笔记.assets/image-20240122170231501-17059141526161.png)
+
+之前在Widget的构造函数中使用this，使之运行后可以在widget界面显示 。
+
+
+
+运行结果：
+
+![image-20240122171233381](Qt笔记.assets/image-20240122171233381-17059147549592.png)
+
+
+
+### 2、QImage
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QPainter>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    // QImage
+    QImage img(400, 300, QImage::Format_RGB32);
+    img.fill(Qt::white);
+    QPainter painter(&img);
+    painter.setPen(Qt::red);
+    painter.drawEllipse(QPoint(100, 100), 50, 50);
+    img.save("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test33/Pix_Image/Image/myImage.jpg");
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+运行结果如下：
+
+<img src="Qt笔记.assets/image-20240122182828890.png" alt="image-20240122182828890" style="zoom: 67%;" />
+
+
+
+2.2	像素修改
+
+1、导入资源图片擎天柱
+
+![image-20240122183622986](Qt笔记.assets/image-20240122183622986-17059197841225.png)
+
+2、事件处理函数
+
+```c++
+void paintEvent(QPaintEvent *event);
+```
+
+```c++
+void Widget::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    QImage img;
+    img.load("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test33/Pix_Image/Image/optimus prime.jpeg");
+    for(int i = 50; i < 100; i++) // 50 * 50 的红方格
+    {
+        for(int j = 50; j < 100; j++)
+        {
+            QRgb rgb = qRgb(255, 0, 0);
+            img.setPixel(i, j, rgb);
+        }
+    }
+    
+    painter.drawImage(0, 0, img);
+}
+```
+
+ 运行结果如下：
+
+![image-20240122185316641](Qt笔记.assets/image-20240122185316641-17059207978366.png)
+
+
+
+
+
+## 37、视频37：绘图设备QPicture和QBitmap
+
+### 1、QPicture
+
+QPicture 可以理解为是一个绘图的容器，里面保存有绘图的记录和重绘制的指令；存储的形式是二进制形式，也就是说我们无法双击打开 picture 文件。
+
+1.1	头文件
+
+```
+#include <QPicture>
+#include <QPainter>
+```
+
+1.2	代码文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QPicture>
+#include <QPainter>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    QPicture pic;
+//    QPainter painter(&pic); // 形式1
+    QPainter painter;   // 形式2
+    painter.begin(&pic); // 形式2
+    
+    painter.setPen(Qt::red);
+    painter.drawEllipse(QPoint(100, 100), 50, 50);
+    painter.end();
+    pic.save("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test34/QPicture_QBitmap/Image/pic.jpg");
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+1.3	painter.end() 函数
+
+end() 的调用确实与 QPicture 有关，因为它涉及到将绘图结果保存到  QPicture  中。这种方式使得你可以在需要的时候使用 QPicture 对象进行重绘，而不必再次执行相同的绘图操作。
+
+如果没有painter.end()这一句，则不会有图片生成
+
+
+
+1.4	加载已经存储的图像
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPicture pic;
+    // 加载图片
+    pic.load("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test34/QPicture_QBitmap/Image/pic.jpg");
+    painter.drawPicture(0, 0, pic);
+}
+```
+
+1.5	运行结果
+
+<img src="Qt笔记.assets/image-20240122213114723.png" alt="image-20240122213114723" style="zoom:67%;" />
+
+
+
+### 2、QBitmap
+
+==QBitmap 绘制出来的是黑白的==
+
+2.1	头文件：
+
+```c++
+#include <QBitmap>
+```
+
+2.2	代码文件
+
+```c++
+// QBitmap 绘制出来的是黑白的
+    QBitmap bm(400, 300);
+    QPainter painter(&bm);
+    painter.setPen(Qt::red);
+    painter.drawEllipse(QPoint(100, 100), 50, 50);
+    bm.save("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test34/QPicture_QBitmap/Image/bm.jpg");
+```
+
+2.3	运行结果
+
+<img src="Qt笔记.assets/image-20240122212217412.png" alt="image-20240122212217412" style="zoom: 50%;" />
+
+2.4	用QBitmap查看彩色图像
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    // QBitmap 打开彩色图片
+    QPainter painter(this);
+    QBitmap bm;
+    // 加载图片
+    bm.load("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test34/QPicture_QBitmap/Image/bm.jpg");
+    painter.drawPixmap(0, 0, bm);
+}
+```
+
+2.5	运行结果
+
+![image-20240122213809223](Qt笔记.assets/image-20240122213809223-17059306905243.png)
+
+
+
+
+
+## 38、绘制弧线
+
+### 1、本节内容
+
+绘制一个半圆形图形。
+
+### 2、具体步骤
+
+2.1	前期准备
+
+```c++
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+    resize(1600, 900); // 原型this->resize(),但在widget构造函数里面，因此省略了this
+    this->setStyleSheet("background-color: black"); // 背景全黑
+}
+```
+
+
+
+2.2	重写事件处理函数
+
+```c++
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPen pen;
+
+    pen.setColor(Qt::green);
+    painter.setPen(pen);
+
+    painter.drawArc(25, 25, 1550, 1550, 0 * 16, 180 * 16); // 参数5以 1/16 度为单位，参数为16，意味着16 * (1/16) = 1度 // y
+    painter.drawArc(180, 180, 1240, 1240, 0 * 16, 180 * 16);
+    painter.drawArc(335, 335, 930, 930, 0 * 16, 180 * 16);
+    painter.drawArc(490, 490, 620, 620, 0 * 16, 180 * 16);
+    painter.drawArc(645, 645, 310, 310, 0 * 16, 180 * 16);
+}
+```
+
+
+
+```
+void QPainter::drawArc(int *x*, int *y*, int *width*, int *height*, int *startAngle*, int *spanAngle*)
+```
+
+绘制由矩形定义的弧，该矩形始于 (x, y)，具有指定的宽度和高度，以及给定的 startAngle 和 spanAngle。
+
+- 
+- 参数5以 1/16 度为单位，参数为16，意味着16 * (1/16) = 1度
+
+
+
+![](Qt笔记.assets/屏幕截图 2024-01-23 131129-17059870104522.png)
+
+第一个drawArc计算如下图所示：
+
+![image-20240123131804638](Qt笔记.assets/image-20240123131804638-17059870866033.png)
+
+### 3、运行结果：
+
+![image-20240123130705270](Qt笔记.assets/image-20240123130705270-17059864265911.png)
