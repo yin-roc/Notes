@@ -4161,3 +4161,648 @@ void QPainter::drawArc(int *x*, int *y*, int *width*, int *height*, int *startAn
 ### 3、运行结果：
 
 ![image-20240123130705270](Qt笔记.assets/image-20240123130705270-17059864265911.png)
+
+
+
+
+
+## 39、超声波雷达项目界面设计_01雷达主界面
+
+### 1、本节内容
+
+以上节视频的绘制曲线界面为背景，绘制雷达界面
+
+### 2、具体步骤
+
+2.1	全部代码
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QPainter>
+#include <QtMath>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    resize(1600, 900); // 原型this->resize(),但在widget构造函数里面，因此省略了this
+    this->setStyleSheet("background-color: black"); // 背景全黑
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPen pen;
+
+    painter.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+
+
+    pen.setColor(Qt::green);
+    painter.setPen(pen);
+
+    painter.drawArc(100, 100, 1400, 1400, 0 * 16, 180 * 16); // 参数5以 1/16 度为单位，参数为16，意味着16 * (1/16) = 1度
+    painter.drawArc(240, 240, 1120, 1120, 0 * 16, 180 * 16);
+    painter.drawArc(380, 380, 840, 840, 0 * 16, 180 * 16);
+    painter.drawArc(520, 520, 560, 560, 0 * 16, 180 * 16);
+    painter.drawArc(660, 660, 280, 280, 0 * 16, 180 * 16);
+
+    // 底部画一道线    
+    painter.drawLine(0, 800, 1600, 800);
+
+    // 每隔30度画一道线
+    painter.save(); // 保存一下坐标系：原坐标系
+    painter.translate(800, 800);
+
+    for(int i = 0; i < 5; i++)
+    {
+        painter.rotate(-30); // 旋转坐标系30度，相对于原坐标系逆时针旋转30度
+        painter.drawLine(0, 0, 720, 0);
+    }
+    painter.restore(); // 恢复到原坐标系
+
+    painter.save();
+    QFont font("Courier 10 Pitch", 30, QFont::Bold, true);
+    painter.setFont(font);
+    painter.setPen(Qt::green);
+    painter.translate(800, 800); // 平移当前坐标系原点
+
+    painter.drawText(720, 0, "0°");
+
+    // 角度刻度
+    // x = 720 * cos30, y = 720 * sin30
+    painter.drawText(720 * qCos(qDegreesToRadians(30.0)), 720 * qSin(qDegreesToRadians(-30.0)), "30°"); // 坐标原点的右下方才是x正和y正
+    painter.drawText(720 * qCos(qDegreesToRadians(60.0)), 720 * qSin(qDegreesToRadians(-60.0)), "60°");
+    painter.drawText(720 * qCos(qDegreesToRadians(90.0))-20, 720 * qSin(qDegreesToRadians(-90.0)), "90°");
+    painter.drawText(720 * qCos(qDegreesToRadians(120.0))-40, 720 * qSin(qDegreesToRadians(-120.0)), "120°");
+    painter.drawText(720 * qCos(qDegreesToRadians(150.0))-80, 720 * qSin(qDegreesToRadians(-150.0)), "150°");
+    painter.drawText(720 * qCos(qDegreesToRadians(180.0))-80, 720 * qSin(qDegreesToRadians(-180.0)), "180°");
+
+    // 距离刻度
+    painter.drawText(140, 30, "10cm");
+    painter.drawText(280, 30, "20cm");
+    painter.drawText(420, 30, "30cm");
+    painter.drawText(560, 30, "40cm");
+    painter.drawText(700, 30, "50cm");
+
+}
+```
+
+
+
+2.2	Qt中 sin 和 cos 的函数使用
+
+1. 头文件
+
+    ```
+    #include <QtMath>
+    ```
+
+2. 两个函数原型
+
+[q](qtglobal.html#qreal-typedef)real qSin([qreal](qtglobal.html#qreal-typedef) *v*)
+
+[q](qtglobal.html#qreal-typedef)real qCos([qreal](qtglobal.html#qreal-typedef) *v*)
+
+这里的角度 v 使用的是==弧度制==！
+
+但是 该头文件中同样提供了 qDegreesToRadians(float *degrees*)  来将角度转换为弧度制
+
+
+
+### 3、运行结果
+
+![image-20240123220307043](Qt笔记.assets/image-20240123220307043-17060185883851.png)
+
+
+
+
+
+## 40、超声波雷达项目界面设计_02：绘制扫描效果
+
+### 1、本节内容
+
+在上一节的基础上，增加了动态扫描效果。
+
+### 2、具体步骤
+
+2.1	构建一条扫描线线段
+
+```c++
+// 扫描线段
+pen.setWidth(12);
+painter.setPen(pen);
+painter.save();
+painter.translate(800, 800);
+int x = int(700 * qCos(qDegreesToRadians(angle)));
+int y = int(-700 * qSin(qDegreesToRadians(angle)));
+painter.drawLine(0, 0, x, y);
+```
+
+运行结果如图所示：
+
+<img src="Qt笔记.assets/image-20240124171127710.png" alt="image-20240124171127710" style="zoom:80%;" />
+
+
+
+2.2	线段旋转
+
+头文件：
+
+```c++
+public slots:
+    void timerTimeout();
+
+private:
+    Ui::Widget *ui;
+    double angle = 0.0;
+    int flag = 0;
+```
+
+源文件：
+
+```c++
+// 定时器实现线段旋转
+QTimer * timer = new QTimer(this);
+timer->start(20);
+connect(timer, &QTimer::timeout, this, &Widget::timerTimeout);
+```
+
+```c++
+void Widget::timerTimeout()
+{
+//    qDebug() << "hello world!";
+    if(flag == 0)
+    {
+        angle++;
+        if(angle == 180.0)
+            flag = 1;
+    }
+    else
+    {
+        angle--;
+        if(angle == 0)
+            flag = 0;
+    }
+
+    update(); // 刷新串口部件
+}
+```
+
+效果如下：
+
+![](Qt笔记.assets/雷达界面.gif)
+
+
+
+2.3	拖影（余影）设置
+
+```c++
+    // 添加余影/拖影
+    double d_angle = angle;
+    if(flag == 0)
+    {
+        for(int num = 1; num <= d_angle; num++)
+        {
+            painter.setOpacity(1 - num * 1.0 / ((d_angle > 30.0) ? 30.0 : d_angle));
+            x = int(700 * qCos(qDegreesToRadians(d_angle - num)));
+            y = int(-700 * qSin(qDegreesToRadians(d_angle - num)));
+            painter.drawLine(0, 0, x, y);
+            if(num == 30) // 设置最多拖影为 30 个
+                break;
+        }
+    }
+    else if(flag == 1)
+    {
+        for(int num =1; num <= (180 - d_angle); num++)
+        {
+            painter.setOpacity(1 - num * 1.0 / (((180 - d_angle) > 30.0) ? 30.0 : (180 - d_angle)));
+            x = int(700 * qCos(qDegreesToRadians(d_angle + num)));
+            y = int(-700 * qSin(qDegreesToRadians(d_angle + num)));
+            painter.drawLine(0, 0, x, y);
+            if(num == 30)
+                break;
+        }
+    }
+```
+
+### 3、运行结果
+
+总体代码：
+
+头文件：
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+    void paintEvent(QPaintEvent *);
+
+public slots:
+    void timerTimeOut();
+
+private:
+    Ui::Widget *ui;
+    double angle = 0.0;
+    int flag = 0; // 0代表逆时针转动，1代表顺时针转动
+};
+#endif // WIDGET_H
+```
+
+源文件：
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QPainter>
+#include <QtMath>
+#include <QTimer>
+#include <QDebug>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    resize(1600, 900); // 原型this->resize(),但在widget构造函数里面，因此省略了this
+    this->setStyleSheet("background-color: black"); // 背景全黑
+
+    QTimer * timer = new QTimer(this);
+    timer->start(20);
+    connect(timer, &QTimer::timeout, this, &Widget::timerTimeOut);
+
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QPen pen;
+
+    painter.setRenderHint(QPainter::Antialiasing); // 抗锯齿
+
+
+    pen.setColor(Qt::green);
+    painter.setPen(pen);
+
+    painter.drawArc(100, 100, 1400, 1400, 0 * 16, 180 * 16); // 参数5以 1/16 度为单位，参数为16，意味着16 * (1/16) = 1度
+    painter.drawArc(240, 240, 1120, 1120, 0 * 16, 180 * 16);
+    painter.drawArc(380, 380, 840, 840, 0 * 16, 180 * 16);
+    painter.drawArc(520, 520, 560, 560, 0 * 16, 180 * 16);
+    painter.drawArc(660, 660, 280, 280, 0 * 16, 180 * 16);
+
+    // 底部画一道线
+    painter.drawLine(0, 800, 1600, 800);
+
+    // 每隔30度画一道线
+    painter.save(); // 保存一下坐标系：原坐标系
+    painter.translate(800, 800);
+
+    for(int i = 0; i < 5; i++)
+    {
+        painter.rotate(-30); // 旋转坐标系30度，相对于原坐标系逆时针旋转30度
+        painter.drawLine(0, 0, 720, 0);
+    }
+    painter.restore(); // 恢复到原坐标系
+
+    painter.save();
+    QFont font("Courier 10 Pitch", 30, QFont::Bold, true);
+    painter.setFont(font);
+    painter.setPen(Qt::green);
+    painter.translate(800, 800); // 平移当前坐标系原点
+
+    painter.drawText(720, 0, "0°");
+
+    // 角度刻度
+    // x = 720 * cos30, y = 720 * sin30
+    painter.drawText(720 * qCos(qDegreesToRadians(30.0)), -720 * qSin(qDegreesToRadians(30.0)), "30°"); // 坐标原点的右下方才是x正和y正
+    painter.drawText(720 * qCos(qDegreesToRadians(60.0)), -720 * qSin(qDegreesToRadians(60.0)), "60°");
+    painter.drawText(720 * qCos(qDegreesToRadians(90.0))-20, -720 * qSin(qDegreesToRadians(90.0)), "90°");
+    painter.drawText(720 * qCos(qDegreesToRadians(120.0))-40, -720 * qSin(qDegreesToRadians(120.0)), "120°");
+    painter.drawText(720 * qCos(qDegreesToRadians(150.0))-80, -720 * qSin(qDegreesToRadians(150.0)), "150°");
+    painter.drawText(720 * qCos(qDegreesToRadians(180.0))-80, -720 * qSin(qDegreesToRadians(180.0)), "180°");
+
+    // 距离刻度
+    painter.drawText(140, 30, "10cm");
+    painter.drawText(280, 30, "20cm");
+    painter.drawText(420, 30, "30cm");
+    painter.drawText(560, 30, "40cm");
+    painter.drawText(700, 30, "50cm");
+    painter.restore();
+
+    // 扫描线段
+    pen.setWidth(12);
+    painter.setPen(pen);
+    painter.save();
+    painter.translate(800, 800);
+    int x = int(700 * qCos(qDegreesToRadians(angle))); // 强制类型转换
+    int y = int(-700 * qSin(qDegreesToRadians(angle))); // 右下方 x 和 y 是正的，右上方 x 是正的， y 是负的。
+    painter.drawLine(0, 0, x, y);
+
+    // 添加余影
+    double d_angle = angle;
+    if(flag == 0)
+    {
+        for(int num = 1; num <= d_angle; num++)
+        {
+            painter.setOpacity(1 - num * 1.0 / ((d_angle > 30.0) ? 30.0 : d_angle)); // 设置透明度
+            x = int(700 * qCos(qDegreesToRadians(d_angle - num)));
+            y = int(-700 * qSin(qDegreesToRadians(d_angle - num)));
+            painter.drawLine(0, 0 , x, y);
+            if(num == 30) // 设置最多拖影为 30 个
+                break;
+        }
+    }
+    else if(flag == 1)
+    {
+        for(int num = 1; num <= (180 - d_angle); num++)
+        {
+            painter.setOpacity(1 - num * 1.0 / (((180 - d_angle) > 30.0) ? 30.0 : (180 - d_angle))); // 设置透明度
+            x = int(700 * qCos(qDegreesToRadians(d_angle + num)));
+            y = int(-700 * qSin(qDegreesToRadians(d_angle + num)));
+            painter.drawLine(0, 0 , x, y);
+            if(num == 30)
+                break;
+        }
+    }
+
+    painter.restore();
+
+}
+
+
+void Widget::timerTimeOut()
+{
+    // 更新角度
+//    qDebug() << "hello world!";
+    if(flag == 0)
+    {
+        angle++;
+        if(angle == 180)
+            flag = 1;
+    }
+    else
+    {
+        angle--;
+        if(angle == 0)
+            flag = 0;
+    }
+
+    update();
+}
+```
+
+![](Qt笔记.assets/雷达界面2.gif)
+
+
+
+
+
+## 41、超声波雷达项目界面设计_03：Qt串口接收STM32发送的角度值
+
+
+
+![image-20240124215308546](Qt笔记.assets/image-20240124215308546-17061043896821.png)
+
+
+
+
+
+## 43、视频43：文件读写
+
+### 1、本节内容
+
+文件的读与写
+
+### 2、具体步骤
+
+2.1	创建如图所示 ui 界面
+
+从左往右，从上往下依次为：LineEdit、PushButtonn、TextEdit。
+
+![image-20240125113728719](Qt笔记.assets/image-20240125113728719-17061538498801.png)
+
+2.2	信号与槽
+
+```c++
+connect(ui->pushButton, &QPushButton::clicked, this, [&](){});
+```
+
+
+
+2.3	读操作
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QFileDialog>
+#include <QFile>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, [&](){
+        QString filename = QFileDialog::getOpenFileName(this, "打开文件", "/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test40/File");
+        ui->lineEdit->setText(filename);
+        QFile file(filename); // 将QFile对象关联到指定文件
+
+        // 读
+        file.open(QIODevice::ReadOnly);
+//        QByteArray array = file.readAll(); // 读取全部内容
+        QByteArray array;
+        while(!file.atEnd())
+        {
+            array += file.readLine(); // 一行一行的读取
+        }
+        ui->textEdit->setText(array); // 此处发生了隐式转换
+        file.close();
+    });
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+```
+
+```c++
+QString getOpenFileName(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString(), const QString &filter = QString(), QString *selectedFilter = nullptr, QFileDialog::Options options = Options())
+```
+
+parent: 指定文件对话框的**父窗口**，即文件对话框在哪个窗口上显示。默认为nullptr，表示没有父窗口。
+
+caption: 文件**对话框的标题**，显示在对话框的顶部。默认为一个空字符串。
+
+dir: 指定对话框打开时显示的**目录路径**。默认为一个空字符串，表示使用系统默认目录。
+
+filter: 用于筛选文件类型的过滤器，可以限制用户只能选择特定类型的文件。例如，"Text files (.txt);;XML files (.xml)"。默认为一个空字符串，表示不使用文件类型过滤器。
+
+selectedFilter: 用于存储用户选择的过滤器的指针。如果用户选择了特定类型的文件，该指针将被设置为相应的过滤器字符串。默认为nullptr，表示不需要存储选择的过滤器。
+
+options: 包含文件对话框的选项，以控制对话框的行为。这是一个包含多个选项的枚举类型，可以设置多个选项的组合。默认为Options()，表示没有特殊选项。
+
+
+
+2.4	读操作运行结果
+
+![image-20240125125751736](Qt笔记.assets/image-20240125125751736-17061586732542.png)
+
+
+
+2.5	写操作
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QFileDialog>
+#include <QFile>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::clicked, this, [&](){
+        QString filename = QFileDialog::getOpenFileName(this, "打开文件", "/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test40/File");
+        ui->lineEdit->setText(filename);
+        QFile file(filename); // 将QFile对象关联到指定文件
+
+        // 读
+        file.open(QIODevice::ReadOnly);
+//        QByteArray array = file.readAll(); // 读取全部内容
+        QByteArray array;
+        while(!file.atEnd())
+        {
+            array += file.readLine(); // 一行一行的读取
+        }
+        ui->textEdit->setText(array); // 此处发生了隐式转换
+        file.close();
+        //-------------------------------------------------------------------------------------------------//
+        // 写
+        file.open(QIODevice::Append); // 单纯写入会覆盖原有内容，因此选择在原文末尾追加
+        file.write("I love you, Rick!");
+        file.close(); // 隐式转换
+    });
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+==Tips：==
+
+1. **文件选择后立即读取**：在第一次运行时，你选择了文件后，立即读取了文件内容并显示在 textEdit 中。但由于在第一次运行时，文件末尾并没有追加内容，所以看起来好像没有写入。第二次运行时，由于上一次已经在文件末尾追加了内容，所以能够读取到并显示。
+2. **文件读写位置**：在读取后，文件的读写位置（文件指针）可能已经在文件的末尾。在写入前，你没有将文件指针重新设置到文件的开头，导致追加的写入也发生在文件的末尾。在第一次运行时，这可能导致看不到之前追加的内容。
+
+为了解决这个问题，你可以在写入前使用 file.seek(0) 将文件指针重新设置到文件的开头，确保写入操作发生在文件的开头而不是末尾。修改代码如下：
+
+```
+// 写
+file.open(QIODevice::Append);
+file.seek(0); // 将文件指针设置到文件开头
+file.write("I love you, Rick!");
+file.close();
+```
+
+2.6	运行结果
+
+<img src="Qt笔记.assets/image-20240125130652966.png" alt="image-20240125130652966" style="zoom: 67%;" />
+
+
+
+
+
+
+
+## 44、视频44：文件信息和文件定位操作
+
+### 1、本节内容
+
+输出文件信息和文件定位修改
+
+### 2、具体步骤
+
+2.1	输出文件信息
+
+```c++
+QFile file("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test41/File/MyTest.txt");
+QFileInfo info(file);
+qDebug() << "绝对路径：" << info.absoluteFilePath();
+qDebug() << "文件名：" << info.fileName();
+qDebug() << "后缀名：" << info.suffix();
+qDebug() << "创建时间：" << info.created();
+qDebug() << "文件大小：" << info.size();
+```
+
+运行结果如图所示：
+
+![image-20240125183707054](Qt笔记.assets/image-20240125183707054-17061790280261.png)
+
+
+
+2.2	想要传统的输出时间，比如年月日等
+
+​	修改对应语句如下：
+
+```c++
+qDebug() << "创建时间：" << info.created().toString("yyyy.MM.dd hh:mm:ss");
+```
+
+运行结果如下：
+
+![image-20240125184200782](Qt笔记.assets/image-20240125184200782-17061793222332.png)
+
+2.3	修改文件定位	
+
+```c++
+c    file.open(QIODevice::ReadOnly);
+    file.seek(0); // 当前文件指针指向文件开头
+    QByteArray array = file.read(5);
+    qDebug() << "前 5 个字节：" << array;
+    qDebug() << "当前位置：" << file.pos();
+    file.seek(15); // 当前文件指针指向文件第十五个字符后面
+    array = file.read(5);
+    qDebug() << "第 16 ～ 20 个字节：" << array;
+    file.close();
+```
+
+运行结果如图所示：
+
+![image-20240125184800230](Qt笔记.assets/image-20240125184800230-17061796815963.png)
