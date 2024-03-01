@@ -1,6 +1,8 @@
-# Qt学习目录
+Qt学习目录
 
 [TOC]
+
+
 
 ## 快捷键
 
@@ -1051,13 +1053,13 @@ dialog->setAttribute(Qt::WA_DeleteOnClose); // 只要模态窗口被关闭，就
 
 ### 3、颜色文本框
 
-#### 3.1头文件
+3.1	头文件
 
 ```
 #include <QColorDialog> // 颜色对话框
 ```
 
-#### 3.2代码
+3.2	代码
 
 使用静态成员函数来实现，即通过类名来调用相关的函数，不用再费劲创建指针来调用相关函数。
 
@@ -1076,13 +1078,13 @@ void MainWindow::on_pushButton_clicked()
 
 ### 4、文件对话框
 
-#### 4.1头文件
+4.1	头文件
 
 ```
 #include <QFileDialog>
 ```
 
-#### 4.2代码
+4.2	代码
 
 ```c++
 void MainWindow::on_pushButton_2_clicked()
@@ -1103,7 +1105,7 @@ QFileDialog::getOpenFileName()
 3. 参数3：具体地址；
 4. 参数4：要检索的文件名称+文件格式
 
-#### 4.3运行结果
+4.3	运行结果
 
 ![image-20231226215307662](E:\2笔记\1-Notes\Qt\Qt笔记\图片\image-20231226215307662.png)
 
@@ -1111,13 +1113,13 @@ QFileDialog::getOpenFileName()
 
 ### 5、字体对话框
 
-#### 5.1头文件
+5.1	头文件
 
 ```
 #include <QFontDialog>
 ```
 
-#### 5.2代码
+5.2	代码
 
 ```c++
 void MainWindow::on_pushButton_3_clicked()
@@ -1138,7 +1140,7 @@ void MainWindow::on_pushButton_3_clicked()
 
 
 
-#### 5.3运行结果
+5.3	运行结果
 
 对比发现，字体按钮的文字发生改变。
 
@@ -1152,13 +1154,13 @@ void MainWindow::on_pushButton_3_clicked()
 
 ### 6、输入对话框
 
-#### 6.1头文件
+6.1	头文件
 
 ```
 #include <QInputDialog>
 ```
 
-#### 6.2代码
+6.2	代码
 
 ```c++
 void MainWindow::on_pushButton_4_clicked()
@@ -1203,7 +1205,7 @@ QInputDialog::getInt（）
 7. 参数7：输入框内的数字步长
 8. 参数8：布尔值
 
-#### 6.3运行结果
+6.3	运行结果
 
 <img src="E:\2笔记\1-Notes\Qt\Qt笔记\图片\image-20231226220506410.png" alt="image-20231226220506410" style="zoom:50%;" />
 
@@ -1228,13 +1230,13 @@ QInputDialog::getInt（）
 
 ### 2、消息对话框
 
-#### 2.1头文件
+2.1	头文件
 
 ```
 #include <QMessageBox>
 ```
 
-#### 2.2代码
+2.2	代码
 
 对应运行结果各个参数的意思
 
@@ -1261,7 +1263,7 @@ void MainWindow::on_pushButton_5_clicked()
 }
 ```
 
-#### 2.3运行结果
+2.3	运行结果
 
 <img src="E:\2笔记\1-Notes\Qt\Qt笔记\图片\image-20231227145730367.png" alt="image-20231227145730367" style="zoom:50%;" />
 
@@ -1269,13 +1271,13 @@ void MainWindow::on_pushButton_5_clicked()
 
 ### 3、进度对话框
 
-#### 3.1头文件
+3.1	头文件
 
 ```
 #include <QProgressDialog>
 ```
 
-#### 3.2代码
+3.2	代码
 
 ```c++
 void MainWindow::on_pushButton_6_clicked()
@@ -1319,7 +1321,7 @@ prodlg.setValue(i)
 
 
 
-#### 3.3运行结果
+3.3	运行结果
 
 <img src="E:\2笔记\1-Notes\Qt\Qt笔记\图片\image-20231227151058531.png" alt="image-20231227151058531" style="zoom:50%;" />
 
@@ -1338,13 +1340,13 @@ prodlg.setValue(i)
 
 ### 2、错误对话框
 
-#### 2.1头文件
+2.1	头文件
 
 ```
 #include <QErrorMessage>
 ```
 
-#### 2.2代码
+2.2	代码
 
 ```c++
 // 错误信息对话框(经常用消息对话框显示)
@@ -1366,7 +1368,7 @@ void MainWindow::on_pushButton_7_clicked()
 }
 ```
 
-#### 2.3运行结果
+2.3	运行结果
 
 问题1：即使去掉了勾选Show this message again，下面界面关掉重新打开之后，依旧会自动被重新勾选
 
@@ -1376,13 +1378,13 @@ void MainWindow::on_pushButton_7_clicked()
 
 ### 3、向导对话框
 
-#### 3.1头文件
+3.1	头文件
 
 ```
 #include <QWizard>
 ```
 
-#### 3.2代码
+3.2	代码
 
 ```c++
 //向导对话框
@@ -1411,7 +1413,7 @@ void MainWindow::on_pushButton_8_clicked()
 }
 ```
 
-#### 3.3运行结果
+3.3	运行结果
 
 ![image-20231227173055846](E:\2笔记\1-Notes\Qt\Qt笔记\图片\image-20231227173055846.png)
 
@@ -1425,11 +1427,11 @@ void MainWindow::on_pushButton_8_clicked()
 
 ### 1、Tool Button
 
-#### 1.1 介绍
+1.1	介绍
 
 用于工具栏、工具箱或其他工具集的小部件，它可以显示文本、图像或两者结合。
 
-#### 1.2 测试案例
+1.2 	测试案例
 
 1、插入Tool Button按钮
 
@@ -1465,11 +1467,11 @@ void MainWindow::on_pushButton_8_clicked()
 
 ### 2、RadioButton
 
-#### 2.1 介绍
+2.1	介绍
 
 QRadioButton 用于创建单选按钮。多个单选按钮可以分组在一起，形成一个单选按钮组。
 
-#### 2.2 测试案例
+2.2	测试案例
 
 1、插入按钮Radio Button
 
@@ -1528,11 +1530,11 @@ connect(ui->radioButton_5, &QRadioButton::clicked, mc, &MyClass::MySlot);
 
 ### 3、Check Box
 
-#### 3.1 介绍
+3.1	介绍
 
 在Qt中，QCheckBox是一个复选框部件，允许用户在两种状态之间切换，通常用于启用或禁用一个选项。
 
-#### 3.2 测试案例
+3.2	测试案例
 
 1、插入按钮check box，并选择三模态按钮：
 
@@ -4806,3 +4808,3548 @@ c    file.open(QIODevice::ReadOnly);
 运行结果如图所示：
 
 ![image-20240125184800230](Qt笔记.assets/image-20240125184800230-17061796815963.png)
+
+
+
+
+
+## 45、视频45：目录操作：文件系统监视器
+
+### 1、本节内容
+
+1. 文件目录相关操作
+2. 文件系统监视器
+
+### 2、具体步骤
+
+2.1	使用 currentPath() 输出当前的文件路径
+
+1. 包含头文件
+
+	```c++
+	#include <QDir>
+	#include <QDebug>
+	```
+
+2. 具体代码
+
+	```c++
+	QDir myDir(QDir::currentPath());
+	qDebug() << myDir;
+	```
+
+3. 输出结果
+
+	```c++
+	QDir( "/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/build-Dir-Desktop_Qt_5_13_2_GCC_64bit-Debug" , nameFilters = { "*" },  QDir::SortFlags( Name | IgnoreCase ) , QDir::Filters( Dirs|Files|Drives|AllEntries ) )
+	```
+
+2.2	直接加载文件具体目录
+
+1. 具体代码
+
+	```c++
+	QDir myDir("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir");
+	ui->listWidget->addItem(myDir.absolutePath()); // 返回文件的绝对路径，但不包括文件名
+	```
+
+	运行结果如下所示：
+
+	![image-20240126170102600](Qt笔记.assets/image-20240126170102600-17062596637571.png)
+
+2. QFileInfo 类中的 absolutePath() 和 absoluteFilePath() 的区别
+
+	absolutePath()：
+
+	（1）返回文件的绝对路径，但==不包括文件名==。
+
+	（2）如果你有一个 QFileInfo 对象表示文件，调用 absolutePath 将返回文件所在目录的绝对路径。
+
+	absoluteFilePath():
+
+	（1）返回==包括文件名在内的完整绝对路径==。
+
+	（2）如果你有一个 QFileInfo 对象表示文件，调用 absoluteFilePath 将返回包括文件名在内的完整路径。
+
+3. entiryList() 函数
+
+	（1）包含在头文件 QDir 中；
+
+	（2）用于获取目录中的文件和子目录的列表；
+
+	（3）返回一个 QStringList ，其中包含目录中所有文件和子目录的名称。
+
+	（4）运行结果如下所示：
+
+	![image-20240126192750666](Qt笔记.assets/image-20240126192750666-17062684719672.png)
+
+	**tips：**"."代表当前目录；".."代表父目录
+
+2.3	设置过滤器（setNameFilters）
+
+1. 包含在头文件 QDir 中；
+
+2. 用于设置文件名的过滤器，可以指定只返回符合特定规则的文件；
+
+3. void QDir::setNameFilters(const QStringList &nameFilters);
+
+4. 具体代码如下：
+
+	```c++
+	myDir.setNameFilters(QStringList("*.cpp")); // 设置过滤器，筛选出所有的 Cpp 文件
+	ui->listWidget->addItems(myDir.entryList());
+	```
+
+5. 运行结果如下：
+
+	![image-20240126195542778](Qt笔记.assets/image-20240126195542778-17062701440523.png)
+
+
+
+2.4	文件系统监视器
+
+1. 创建需要监测的文件夹
+
+	```c++
+	myDir.mkdir("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/myDir");
+	```
+
+2. 创建 QFileSystemWatcher 类的对象
+
+	主要作用是允许你在运行时获得关于指定文件或目录状态变化的通知，如文件的创建、修改、删除，或者目录的内容变化等
+
+	```c++
+	QFileSystemWatcher myWatcher;
+	```
+
+3. 创建与监测器相关联的槽函数
+
+	```c++
+	void Showmessage(const QString &path);
+	```
+
+4. 添加需要监测的文件或目录到监测器中
+
+	```c++
+	/ 添加需要监测的文件或目录到监视器中
+	    myWatcher.addPath("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/myDir");
+	    myWatcher.addPath("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/Mytest.txt");
+	```
+
+5. 关联监视器触发信号和槽函数
+
+	```c++
+	connect(&myWatcher, &QFileSystemWatcher::directoryChanged, this, &Widget::Showmessage);
+	connect(&myWatcher, &QFileSystemWatcher::fileChanged, this, &Widget::Showmessage);
+	    
+	void Widget::Showmessage(const QString &path)
+	{
+	    if(path == "/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/myDir")
+	        ui->listWidget->addItem("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/myDir 目录发生改变");
+	    else
+	        ui->listWidget->addItem("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test42/Dir/Mytest.txt 文件发生改变");
+	    ui->listWidget->addItem("------------------------------------------------------");
+	}    
+	```
+
+	
+
+6. 运行结果
+
+	（1）增加目录下的文件
+
+	![image-20240126203645501](Qt笔记.assets/image-20240126203645501-17062726066125.png)
+
+	
+
+	（2）删减目录下的文件
+
+	![image-20240126203627095](Qt笔记.assets/image-20240126203627095-17062725881974.png)
+
+	
+
+	（3）修改文件的内容
+
+	![image-20240126203745345](Qt笔记.assets/image-20240126203745345-17062726665086.png)
+
+
+
+**tips：**为什么在目录下的文件新增文件会触发两次目录发生改变？
+
+导致目录发生两次改变的原因是连接了 directoryChanged 信号和 fileChanged 信号，而这两个信号都关联到了 Widget::showMessage 槽函数。当你新建文件时，首先会触发 fileChanged 信号，然后可能会触发 directoryChanged 信号。
+
+文件的新建可能会引发目录的改变。由于你在槽函数中没有对信号的来源进行区分，因此在文件改变时也会执行目录改变的逻辑。
+
+为了避免重复的输出，你可以修改连接部分的代码，分别连接到不同的槽函数。
+
+```c++
+connect(&myWatcher, &QFileSystemWatcher::directoryChanged, this, &Widget::showDirectoryMessage);
+connect(&myWatcher, &QFileSystemWatcher::fileChanged, this, &Widget::showFileMessage);
+```
+
+```c++
+void Widget::showDirectoryMessage(const QString &path)
+{
+    ui->listWidget->addItem(path + " 目录发生改变");
+    qDebug() << "Directory Changed: " << path;
+}
+
+void Widget::showFileMessage(const QString &path)
+{
+    ui->listWidget->addItem(path + " 文件发生改变");
+    qDebug() << "File Changed: " << path;
+}
+```
+
+  
+
+
+
+## 46、视频46：文本流和数据流
+
+### 1、本节内容
+
+### 2、文本流具体步骤
+
+2.1	头文件
+
+```c++
+#include <QTextStream>
+```
+
+2.2	具体代码
+
+类似于 QFile 的读取方式，仿照如下代码：
+
+```c++
+/* QFile类 读
+// 读
+file.open(QIODevice::ReadOnly);
+//        QByteArray array = file.readAll(); // 读取全部内容
+QByteArray array;
+while(!file.atEnd())
+{
+	array += file.readLine(); // 一行一行的读取
+}
+ui->textEdit->setText(array); // 此处发生了隐式转换
+file.close();
+```
+
+对照修改如下：
+
+```c++
+// QTextStream 类读  文本流
+// 读
+file.open(QIODevice::ReadOnly);
+QTextStream stream(&file); // QFile 类是 QIODevice 类的子类
+stream.setCodec("utf-8"); // 防止中文乱码， 设置输出格式
+
+QByteArray array;
+while(!stream.atEnd())
+{
+	array += stream.readLine();
+}
+
+ui->textEdit->setText(array);
+file.close();
+```
+
+2.3	运行结果
+
+![image-20240127173443387](Qt笔记.assets/image-20240127173443387-17063480846521.png)
+
+2.4	==文件流也可以写！==
+
+### 3、数据流
+
+3.1	头文件
+
+```c++
+#include <QDataStream>
+#include <QDebug>
+```
+
+3.2 具体步骤
+
+```c++
+// 数据流
+QFile file("/home/yin-roc/1_Code/Ubuntu20.04/Qt_Project_Code/Qt_learning_demo/Test/test43/File/file.dat");
+file.open(QIODevice::WriteOnly);
+QDataStream data_out_stream(&file);
+data_out_stream << QString("Hello World") << (qint32)65;
+file.close();
+
+file.open(QIODevice::ReadOnly);
+QDataStream data_in_stream(&file); // 读入文件
+QString str;
+qint32 n;
+data_in_stream >> str >> n;
+qDebug() << "str is" << str << ", n is" << n;
+file.close();
+```
+
+3.3	运行结果
+
+![image-20240127183710762](Qt笔记.assets/image-20240127183710762-17063518322522.png)
+
+3.4	==数据流同样既可以读也可以写。==
+
+
+
+
+
+## 47、视频47：播放音频文件
+
+### 1、本节内容
+
+打开项目文件夹里面文件并播放
+
+### 2、具体步骤
+
+assistant $\longrightarrow$ Qt Multimedia  $\longrightarrow$ Multimedia Recipes中查看：
+
+![image-20240128164505859](Qt笔记.assets/image-20240128164505859-17064315072351.png)
+
+2.1	播放 mp3 文件
+
+1. 在pro文件中加入构建工具
+
+	```c++
+	QT += multimedia
+	```
+
+2. 头文件包含
+
+	```c++
+	#include <QMediaPlayer> 
+	```
+
+3. 新建变量
+
+	```c++
+	QMediaPlayer * player;
+	```
+
+4. 具体代码
+
+	```c++
+	#include "widget.h"
+	#include "ui_widget.h"
+	#include <QDir>
+	Widget::Widget(QWidget *parent)
+	    : QWidget(parent)
+	    , ui(new Ui::Widget)
+	{
+	    ui->setupUi(this);
+	
+	    player = new QMediaPlayer(this);
+	    
+	    // 获取当前应用程序的可执行文件所在的目录路径
+	    QString appDir = QCoreApplication::applicationDirPath();
+	
+	    // 使用 QDir 构造函数创建一个 QDir 对象，表示应用程序目录。QDir 是 Qt 提供的处理目录和文件路径的类。
+	    QDir sourceCodeDir(appDir);
+	    
+	    // 将当前目录切换到上一级目录，即源代码目录
+	    sourceCodeDir.cdUp();
+	    
+	    //获取切换后的源代码目录的路径。现在，sourceCodePath 包含了源代码目录的绝对路径。
+	    QString sourceCodePath = sourceCodeDir.path();
+	    
+	    // 构建音频文件的绝对路径
+	    QString filePath_1 = sourceCodePath + "/Audio/1.mp3";
+	    player->setMedia(QUrl::fromLocalFile(filePath_1));
+	    player->setVolume(50);
+	    player->play();
+	    player->stop();
+	}
+	
+	Widget::~Widget()
+	{
+	    delete ui;
+	}
+	```
+
+2.2	播放 wav 文件
+
+步骤与上面类似
+
+1. 在pro文件中加入构建工具
+
+	```c++
+	QT += multimedia
+	```
+
+2. 头文件包含
+
+	```c++
+	#include <QSoundEffect>
+	```
+
+3. 新建变量
+
+	```c++
+	QSoundEffect * effect;
+	```
+
+4. 具体代码
+
+	```c++
+	//    打开 wav 文件
+	effect = new QSoundEffect(this);
+	QString filePath2 = sourceCodePath + "/Audio/2.wav"; // sourceCodePath来自 mp3 的程序
+	effect->setSource(QUrl::fromLocalFile(filePath2));
+	effect->setVolume(0.5); // 区别之处
+	effect->play();
+	effect->stop();
+	```
+
+### 3、构建ui界面
+
+<img src="Qt笔记.assets/image-20240128170508682.png" alt="image-20240128170508682" style="zoom: 67%;" />
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    player->play();
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    player->stop();
+}
+
+void Widget::on_pushButton_3_clicked()
+{
+    effect->play();
+}
+
+void Widget::on_pushButton_4_clicked()
+{
+    effect->stop();
+}
+```
+
+
+
+
+
+## 48、视频48：播放视频文件
+
+### 1、本节内容
+
+播放指定MP4和WMV文件
+
+tips：Qt默认不支持视频播放，因此windows下的Qt给出了解决方案：安装 K-Lite_Codec_Pack_1720_Standard.exe 软件，==linux下目前可以播放MP4文件==
+
+### 2、具体步骤
+
+2.1	添加配置
+
+1. Video.pro中：
+
+	assistant $\longrightarrow$ QVideoWidget ：
+
+	```c++
+	QT       += multimediawidgets
+	```
+
+2. Widget.h 文件中：
+
+	```c++
+	#include <QMediaPlayer>
+	#include <QVideoWidget>
+	```
+
+2.2	添加相关变量并初始化界面等
+
+1. 变量
+
+	```
+	QMediaPlayer * player;
+	QVideoWidget * videowidget;
+	```
+
+2. 变量初始化
+
+	```c++
+	player = new QMediaPlayer(this);
+	videowidget = new QVideoWidget(this);
+	```
+
+3. 显示设置
+
+	```c++
+	videowidget->resize(800, 300);
+	player->setVideoOutput(videowidget); // 设置视频显示所在
+	```
+
+2.3	设置 Ui 界面并关联相应槽函数
+
+![image-20240129165921034](Qt笔记.assets/image-20240129165921034-17065187628611.png)
+
+2.4	设置 pushButton （按钮：打开文件）关联槽函数
+
+1. 头文件
+
+	```c++
+	QString fileName;
+	```
+
+2. 源文件
+
+	```c++
+	void Widget::on_pushButton_clicked()
+	{
+	//    创建一个文件对话框，允许用户选择一个文件
+	//    初始目录是 "..\"(表示在当前项目文件中)，并将用户选择的文件的路径存储在 fileName 变量中
+	    fileName = QFileDialog::getOpenFileName(this, "Open File", "..\\");
+	    player->setMedia(QUrl::fromLocalFile(fileName));
+	    player->play();    
+	}
+	```
+
+3. 运行结果
+
+	![](Qt笔记.assets/48_1.gif)
+
+4. 注意事项
+
+	注意此处windows如果没有安装K-Lite_Codec_Pack_1720_Standard.exe ，则打不开该文件
+
+2.5	设置按钮：播放、暂停和停止的功能
+
+![48_2](Qt笔记.assets/48_2-17065216384652.gif)
+
+2.6	设置进度条可拖动播放视频
+
+1. 获取当前视频总时长
+
+	```c++
+	void Get_Duration();
+	```
+
+	```c++
+	connect(player, &QMediaPlayer::durationChanged, this, &Widget::Get_Duration);
+	```
+
+	```c++
+	void Widget::Get_Duration()
+	{
+	    //    qDebug() << player->duration(); // 单位是毫秒
+	    ui->horizontalSlider->setMaximum(player->duration());
+	}
+	```
+
+2. 滑动组件horizontalSlider 与视频产生关联
+
+	```c++
+	unsigned long pos;
+	```
+
+	```
+	void Slider_Changed();
+	```
+
+	```c++
+	// 滑动组件horizontalSlider 与视频产生关联、
+	connect(ui->horizontalSlider, &QSlider::valueChanged, this, &Widget::Slider_Changed);
+	```
+
+	```c++
+	void Widget::Slider_Changed()
+	{
+	    pos = ui->horizontalSlider->value();
+	    player->setPosition(pos);
+	}
+	```
+
+3. 运行结果
+
+![18_3](Qt笔记.assets/18_3-17065243312493.gif)
+
+### 3、具体代码
+
+3.1	Video.pro
+
+```c++
+#-------------------------------------------------
+#
+# Project created by QtCreator 2024-01-29T16:55:47
+#
+#-------------------------------------------------
+
+QT       += core gui
+QT       += multimedia
+QT       += multimediawidgets
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = Video
+TEMPLATE = app
+
+# The following define makes your compiler emit warnings if you use
+# any feature of Qt which has been marked as deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
+
+# You can also make your code fail to compile if you use deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+CONFIG += c++11
+
+SOURCES += \
+        main.cpp \
+        widget.cpp
+
+HEADERS += \
+        widget.h
+
+FORMS += \
+        widget.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+```
+
+3.2	widget.h
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QMediaPlayer>
+#include <QVideoWidget>
+
+namespace Ui {
+class Widget;
+}
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void Get_Duration();
+
+    void Slider_Changed();
+
+
+private:
+    Ui::Widget *ui;
+    QMediaPlayer * player;
+    QVideoWidget * videowidget;
+    QString fileName;
+    unsigned long pos;
+
+
+};
+
+#endif // WIDGET_H
+```
+
+3.3	widget.cpp
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QFileDialog>
+
+
+Widget::Widget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    player = new QMediaPlayer(this);
+    videowidget = new QVideoWidget(this);
+
+    videowidget->resize(800, 300);
+    player->setVideoOutput(videowidget); // 设置视频显示所在
+
+    // 获取视频时长
+    connect(player, &QMediaPlayer::durationChanged, this, &Widget::Get_Duration);
+
+    // 滑动组件horizontalSlider 与视频产生关联、
+    connect(ui->horizontalSlider, &QSlider::valueChanged, this, &Widget::Slider_Changed);
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    fileName = QFileDialog::getOpenFileName(this, "Open File", "..\\"); // 创建对话框选择文件并设置初始目录
+    player->setMedia(QUrl::fromLocalFile(fileName)); // 媒体文件路径存储
+    player->play();
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    player->play();
+}
+
+void Widget::on_pushButton_3_clicked()
+{
+    player->pause();
+}
+
+void Widget::on_pushButton_4_clicked()
+{
+    player->stop();
+}
+
+void Widget::Get_Duration()
+{
+    //    qDebug() << player->duration(); // 单位是毫秒
+    ui->horizontalSlider->setMaximum(player->duration());
+}
+
+void Widget::Slider_Changed()
+{
+    pos = ui->horizontalSlider->value();
+    player->setPosition(pos);
+}
+```
+
+
+
+
+
+## 49、视频49：摄像头
+
+### 1、本节内容
+
+打开一个摄像头，并能记录某时刻的截图。
+
+所需头文件如下：
+
+QCamera：用于打开摄像头设备；
+
+QCameraInfo：和摄像头有关的信息和属性；
+
+QCameraViewfinder：用于显示摄像头捕获的画面；
+
+QCameraImageCapture：用于摄像头截图。
+
+### 2、具体步骤
+
+2.1	添加模块支持
+
+```c++
+QT       += multimedia
+QT       += multimediawidgets
+```
+
+QT += multimedia：将Qt Multimedia模块包括在你的项目中，以便你可以使用它的功能，包括摄像头的访问。
+
+QT += multimediawidgets：提供了一些用于显示和控制多媒体内容的小部件，可能对于实现摄像头预览和交互性更有用。
+
+
+
+2.2	添加头文件
+
+```c++
+#include <QWidget>
+#include <QCamera>
+#include <QCameraInfo>
+#include <QCameraViewfinder>
+#include <QCameraImageCapture>
+```
+
+QCamera：用于打开摄像头设备；
+
+QCameraInfo：和摄像头有关的信息和属性；
+
+QCameraViewfinder：用于显示摄像头捕获的画面；
+
+QCameraImageCapture：用于摄像头截图。
+
+
+
+2.3	使用一个示例教程
+
+![image-20240203155124786](Qt笔记.assets/image-20240203155124786-17069466863811.png)
+
+```c++
+// 获取系统上可用摄像头的信息，然后将这些信息存储在QList容器中
+QList<QCameraInfo> cameras = QCameraInfo::availableCameras(); 
+
+// Qt中用于遍历容器元素的循环语法。它遍历cameras列表中的每个QCameraInfo对象，并将其赋值给cameraInfo变量。
+//使用qDebug()将当前摄像头的设备名称输出到调试信息
+foreach (const QCameraInfo &cameraInfo, cameras)
+	qDebug() << cameraInfo.deviceName();
+```
+
+
+
+2.4	添加 QCamera 变量
+
+```c++
+QCamera * camera; // 设置摄像头参数、开始/停止预览，捕捉照片或录制视频等操作
+```
+
+
+
+2.5	绑定摄像头
+
+```c++
+camera = new QCamera(cameras.at(0)); // 从之前提到的摄像头列表中选择第一个摄像头（索引为0）
+```
+
+
+
+2.6	添加 QCameraViewfinder 变量
+
+```c++
+QCameraViewfinder * viewfinder; 
+```
+
+
+
+2.7	关联取景器与摄像头对象，并设置尺寸大小
+
+将取景器与摄像头对象关联，从而在界面上显示摄像头的实时预览：
+
+```c++
+viewfinder = new QCameraViewfinder(this);
+camera->setViewfinder(viewfinder);
+```
+
+
+
+设置尺寸大小：
+
+```c++
+viewfinder->resize(800, 350);
+```
+
+
+
+运行结果如下：
+
+![image-20240203162238153](Qt笔记.assets/image-20240203162238153-17069485602102.png)
+
+
+
+2.8	创建 QCameraImageCapture 变量
+
+```c++
+QCameraImageCapture * imageCapture; // 用于捕捉摄像头的静态图像（照片）
+```
+
+
+
+2.9	使用摄像头进行截图
+
+```c++
+imageCapture = new QCameraImageCapture(camera); // 使用摄像头进行截图
+```
+
+
+
+2.10	开启摄像头
+
+```c++
+camera->start();
+```
+
+
+
+运行结果如下：
+
+![image-20240203162716725](Qt笔记.assets/image-20240203162716725-17069488395733.png)
+
+
+
+2.11	widget.ui 界面设置一个拍照按钮并编写其槽函数
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    camera->setCaptureMode(QCamera::CaptureStillImage); // 设置摄像头的捕捉模式为静态图像
+    QString filename = QFileDialog::getSaveFileName(); // 弹出一个文件对话框，让用户选择保存图像的文件名和位置
+    imageCapture->capture(filename); // 捕捉到的图像保存到用户选择的文件中，文件名由 fileName 变量指定
+}
+```
+
+运行结果：
+
+![image-20240203164410521](Qt笔记.assets/image-20240203164410521-17069498523724.png)
+
+==tips：==此处在编译文件文件夹里面，如需要在源文件，要设置一下。
+
+
+
+### 3、源代码
+
+3.1 Camera.pro
+
+```c++
+QT       += core gui
+QT       += multimedia
+QT       += multimediawidgets
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++11
+
+# The following define makes your compiler emit warnings if you use
+# any Qt feature that has been marked deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
+
+# You can also make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    main.cpp \
+    widget.cpp
+
+HEADERS += \
+    widget.h
+
+FORMS += \
+    widget.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+```
+
+3.2	头文件
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QWidget>
+#include <QCamera>
+#include <QCameraInfo>
+#include <QCameraViewfinder>
+#include <QCameraImageCapture>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+private:
+    Ui::Widget *ui;
+    QCamera * camera;
+    QCameraViewfinder * viewfinder;
+    QCameraImageCapture * imageCapture;
+};
+#endif // WIDGET_H
+```
+
+3.3	源文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+#include <QFileDialog>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    QList<QCameraInfo> cameras = QCameraInfo::availableCameras(); // 获取系统上可用摄像头的信息
+    if(cameras.count() > 0) // 检测到摄像头
+    {
+        // 输出已有摄像头信息
+        foreach (const QCameraInfo &cameraInfo, cameras)
+            qDebug() << cameraInfo.deviceName();
+        camera = new QCamera(cameras.at(0)); // 从之前提到的摄像头列表中选择第一个摄像头（索引为0）
+    }
+
+    viewfinder = new QCameraViewfinder(this);
+    camera->setViewfinder(viewfinder);
+    viewfinder->resize(800, 350);
+
+    imageCapture = new QCameraImageCapture(camera); // 使用摄像头进行截图
+
+    camera->start();
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    camera->setCaptureMode(QCamera::CaptureStillImage); // 设置摄像头的捕捉模式为静态图像
+    QString filename = QFileDialog::getSaveFileName(); // 弹出一个文件对话框，让用户选择保存图像的文件名和位置
+    imageCapture->capture(filename); // 捕捉到的图像保存到用户选择的文件中，文件名由 fileName 变量指定
+}
+```
+
+
+
+
+
+## 50、视频50：创建数据库
+
+### 1、本节内容
+
+查看当前系统支持的数据库驱动程序列表；
+
+创建数据库。
+
+### 2、具体步骤
+
+2.1	添加模块支持
+
+```c++
+QT       += core gui sql
+```
+
+2.2	查看当前系统支持的数据库驱动程序列表
+
+1. 包含头文件
+
+	```c++
+	#include <QtSql/QSqlDatabase>
+	```
+
+2. 查看具体驱动程序
+
+	```c++
+	// 获取当前系统支持的数据库驱动程序的列表
+	QStringList drivers = QSqlDatabase::drivers();
+	foreach (QString driver, drivers) {
+		qDebug() << driver;
+	}
+	```
+
+3. 运行结果
+
+	![image-20240204153628792](Qt笔记.assets/image-20240204153628792-17070321902851.png)
+
+	​	
+
+2.3	创建一个与 SQLite 数据库的连接
+
+```c++
+// 创建一个与SQLite数据库的连接
+QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+db.setDatabaseName("dataset.db");
+
+if(!db.open())
+{
+	qDebug() << "Error: Failed to connect to the database." << db.lastError();
+}
+else
+{
+	qDebug() << "Connect database successful!";
+}
+```
+
+运行结果：
+
+![image-20240204155756248](Qt笔记.assets/image-20240204155756248-17070334779382.png)
+
+
+
+### 3、源代码
+
+3.1	Create_DataSet.pro 文件
+
+```c++
+QT       += core gui sql
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG += c++11
+
+# The following define makes your compiler emit warnings if you use
+# any Qt feature that has been marked deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
+DEFINES += QT_DEPRECATED_WARNINGS
+
+# You can also make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES += \
+    main.cpp \
+    widget.cpp
+
+HEADERS += \
+    widget.h
+
+FORMS += \
+    widget.ui
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+```
+
+3.2	源文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QtSql/QSqlDatabase>
+#include <QDebug>
+#include <QtSql/QSqlError>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    // 获取当前系统支持的数据库驱动程序的列表
+    QStringList drivers = QSqlDatabase::drivers();
+    foreach (QString driver, drivers) {
+        qDebug() << driver;
+    }
+
+    // 创建一个与SQLite数据库的连接
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("dataset.db");
+
+    if(!db.open())
+    {
+        qDebug() << "Error: Failed to connect to the database." << db.lastError();
+    }
+    else
+    {
+        qDebug() << "Connect database successful!";
+    }
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+
+
+
+
+## 51、视频51：插入数据库和遍历数据库
+
+### 1、本节小结
+
+本节需要了解 sqlite 语法：https://blog.csdn.net/u011555996/article/details/122792812
+
+### 2、具体步骤
+
+2.1	创建新表
+
+1.语法：
+
+```c++
+create table tabname(col1 type1 [not null] [primary key],col2 type2 [not null],..)
+    		 表格名称  列1  类型							 列2  类型			   
+```
+
+2.prepare语法的作用：
+
+- **预编译查询语句：** prepare 方法将传递给它的 SQL 查询语句进行预编译。预编译的查询可以提高执行查询的性能，尤其是当相同的查询语句被多次执行时。
+- **参数绑定：** 如果 SQL 查询语句中包含了占位符（例如，:id, :name, :age），那么  prepare 方法还允许在后续的步骤中绑定具体的参数值。
+
+3.代码如下：
+
+```c++
+QString create_sql = "create table student(id int, name varchar(30), age int)";
+sql_query.prepare(create_sql);
+if(!sql_query.exec())
+{
+	qDebug() << "Error, failed to create table." << sql_query.lastError();
+}
+else
+{
+	qDebug() << "Table created.";
+}
+```
+
+4.运行结果：
+
+![image-20240204190715677](Qt笔记.assets/image-20240204190715677-17070448380411.png)
+
+==tips：==当再次运行时，出现了错误，是因为已经创建了表格，无需再创建。因此需要将相应创建表格的代码屏蔽。
+
+![image-20240204190808113](Qt笔记.assets/image-20240204190808113-17070448899172.png)
+
+修改如下：
+
+![image-20240204191135973](Qt笔记.assets/image-20240204191135973-17070450975713.png)
+
+2.2	在表格中插入数据
+
+1. 插入语法
+
+	```c++
+	insert into table1(field1,field2) values(value1,value2)
+	```
+
+	
+
+2. 具体代码
+
+	```c++
+	// 创建 SQL 查询语句
+	// 使用了占位符"?"，表示后续会通过绑定参数的方式为这些占位符提供具体的值
+	QString insert_sql = "insert into student values(?, ?, ?)";
+	// 使用 prepare 方法准备 SQL 查询语句
+	sql_query.prepare(insert_sql); 
+	// 使用 addBindValue 方法绑定具体的值
+	sql_query.addBindValue(1);
+	sql_query.addBindValue("Rick");
+	sql_query.addBindValue(10);
+	// 执行 SQL 查询
+	if(!sql_query.exec())
+	{
+		qDebug() << sql_query.lastError();
+	}
+	else
+	{
+		qDebug() << "Insert Student NO.1!";
+	}
+	```
+
+3. 同理创建第二行表格
+
+	```c++
+	sql_query.prepare(insert_sql);
+	sql_query.addBindValue(2);
+	sql_query.addBindValue("Jack");
+	sql_query.addBindValue(11);
+	if(!sql_query.exec())
+	{
+		qDebug() << sql_query.lastError();
+	}
+	else
+	{
+		qDebug() << "Insert Student NO.2!";
+	}
+	```
+
+4. 运行结果
+
+	![image-20240204193619419](Qt笔记.assets/image-20240204193619419-17070465809114.png)
+
+
+
+2.3	查找语法
+
+1. 语法
+
+	```c++
+	select * from table1
+	```
+
+2. 具体代码
+
+	```c++
+	// 从名为 student 的表中检索所有的记录（* 通配符表示所有列）
+	QString select_all_sql = "select * from student";
+	sql_query.prepare(select_all_sql);
+	if(!sql_query.exec())
+	{
+		qDebug() << sql_query.lastError();
+	}
+	else
+	{
+		// 通过 next 方法逐行遍历查询结果
+		while(sql_query.next())
+		{
+			int id = sql_query.value(0).toInt();
+			QString name = sql_query.value(1).toString();
+			int age = sql_query.value(2).toInt();
+			qDebug() << "id:" << id << "   name:" << name << "    age:" << age;
+		}
+	}
+	```
+
+3. 运行结果
+
+	多次出现id1和id2的原因是插入数据时多次运行，从而导致此次结果：
+
+	![image-20240204194832591](Qt笔记.assets/image-20240204194832591-17070473148025.png)
+
+
+
+### 3、源代码
+
+3.1	.pro文件
+
+```c++
+QT       += core gui sql
+```
+
+3.2	源文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QtSql/QSqlDatabase>
+#include <QDebug>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    /*
+    // 获取当前系统支持的数据库驱动程序的列表
+    QStringList drivers = QSqlDatabase::drivers();
+    foreach (QString driver, drivers) {
+        qDebug() << driver;
+    }
+    */
+
+    // 创建一个与SQLite数据库的连接
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("dataset.db");
+
+    if(!db.open())
+    {
+        qDebug() << "Error: Failed to connect to the database." << db.lastError();
+    }
+    else
+    {
+        qDebug() << "Connect database successful!";
+    }
+
+
+    // 需要了解 sqlite 语句语法
+    QSqlQuery sql_query;
+
+    // 创建新表
+    // 语法：create table tabname(col1 type1 [not null] [primary key],col2 type2 [not null],..)
+    QString create_sql = "create table student(id int, name varchar(30), age int)";
+//    sql_query.prepare(create_sql);
+//    if(!sql_query.exec())
+//    {
+//        qDebug() << "Error, failed to create table." << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "Table created.";
+//    }
+
+    // 创建 SQL 查询语句
+    // 使用了占位符"?"，表示后续会通过绑定参数的方式为这些占位符提供具体的值
+    QString insert_sql = "insert into student values(?, ?, ?)";
+    // 使用 prepare 方法准备 SQL 查询语句
+    sql_query.prepare(insert_sql);
+    // 使用 addBindValue 方法绑定具体的值
+    sql_query.addBindValue(1);
+    sql_query.addBindValue("Rick");
+    sql_query.addBindValue(10);
+    // 执行 SQL 查询
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+    }
+    else
+    {
+        qDebug() << "Insert Student No.1!";
+    }
+
+    sql_query.prepare(insert_sql);
+    sql_query.addBindValue(2);
+    sql_query.addBindValue("Jack");
+    sql_query.addBindValue(11);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+    }
+    else
+    {
+        qDebug() << "Insert Student NO.2!";
+    }
+
+
+    // 查找
+    // 从名为 student 的表中检索所有的记录（* 通配符表示所有列）
+    QString select_all_sql = "select * from student";
+    sql_query.prepare(select_all_sql);
+    if(!sql_query.exec())
+    {
+        qDebug() << sql_query.lastError();
+    }
+    else
+    {
+        // 通过 next 方法逐行遍历查询结果
+        while(sql_query.next())
+        {
+            int id = sql_query.value(0).toInt();
+            QString name = sql_query.value(1).toString();
+            int age = sql_query.value(2).toInt();
+            qDebug() << "id:" << id << "   name:" << name << "    age:" << age;
+        }
+    }
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+```
+
+
+
+
+
+## 52、视频52：更新和删除操作表格
+
+### 1、本节小结
+
+1.1	修改表格中的某个数据；
+
+1.2	删除某一行数据或者删除整个表格数据。
+
+### 2、具体步骤
+
+2.1	更新表格
+
+1. 语法
+
+	```
+	update table1 set field1=value1 where 范围
+	```
+
+2. 示例
+
+	```c++
+	// 更新：update table1 set field1=value1 where 范围
+	QString update_sql = "update student set name = :nm where id = :n";
+	sql_query.prepare(update_sql);
+	sql_query.bindValue(":nm", "Michael");
+	sql_query.bindValue(":n", 1);
+	if(!sql_query.exec())
+	{
+		qDebug() << sql_query.lastError();
+	}
+	else
+	{
+		qDebug() << "Updated";
+	}
+	// 显示
+	select_all_sql = "select * from student";
+	sql_query.prepare(select_all_sql);
+	if(!sql_query.exec())
+	{
+		qDebug() << sql_query.lastError();
+	}
+	else
+	{
+		// 遍历查询结果
+		while(sql_query.next())
+		{
+			int id = sql_query.value(0).toInt();
+			QString name = sql_query.value(1).toString();
+			int age = sql_query.value(2).toInt();
+			qDebug() << "id:" << id <<  "\tname:" << name << "\tage:" << age;
+		}
+	}
+	```
+
+3. 运行结果
+
+![image-20240205164009596](Qt笔记.assets/image-20240205164009596-17071224112561.png)
+
+2. 2	删除某一行
+
+1. 语法
+
+	```c++
+	delete from table1 where 范围
+	```
+
+2. 具体代码
+
+	```c++
+	// 删除某行
+	    QString delete_sql = "delete from student where id = ?";
+	    sql_query.prepare(delete_sql);
+	    sql_query.addBindValue(1);
+	    if(!sql_query.exec())
+	    {
+	        qDebug() << sql_query.lastError();
+	    }
+	    else
+	    {
+	        qDebug() << "Deleted";
+	    }
+	    // 显示
+	    select_all_sql = "select * from student";
+	    sql_query.prepare(select_all_sql);
+	    if(!sql_query.exec())
+	    {
+	        qDebug() << sql_query.lastError();
+	    }
+	    else
+	    {
+	        // 通过 next 方法逐行遍历查询结果
+	        while(sql_query.next())
+	        {
+	            int id = sql_query.value(0).toInt();
+	            QString name = sql_query.value(1).toString();
+	            int age = sql_query.value(2).toInt();
+	            qDebug() << "id:" << id << "   name:" << name << "    age:" << age;
+	        }
+	    }
+	```
+
+3. 运行结果
+
+	![image-20240205170247459](Qt笔记.assets/image-20240205170247459-17071237690293.png)
+
+4. 注意事项
+
+	输出结果的第二行error是因为没有屏蔽创建新表这行语句。
+
+2.3	删除整个表格
+
+1. 语法
+
+	```c++
+	delete from table1
+	```
+
+2. 示例
+
+	```c++
+	QString clear_sql = "delete from student";
+	    sql_query.prepare(clear_sql);
+	    if(!sql_query.exec())
+	    {
+	        qDebug() << sql_query.lastError();
+	    }
+	    else
+	    {
+	        qDebug() << "Table cleared";
+	    }
+	    // 显示
+	    select_all_sql = "select * from student";
+	    sql_query.prepare(select_all_sql);
+	    if(!sql_query.exec())
+	    {
+	        qDebug() << sql_query.lastError();
+	    }
+	    else
+	    {
+	        // 通过 next 方法逐行遍历查询结果
+	        while(sql_query.next())
+	        {
+	            int id = sql_query.value(0).toInt();
+	            QString name = sql_query.value(1).toString();
+	            int age = sql_query.value(2).toInt();
+	            qDebug() << "id:" << id << "\tname:" << name << "\tage:" << age;
+	        }
+	    }
+	```
+
+3. 运行结果
+
+	![image-20240205171232454](Qt笔记.assets/image-20240205171232454-17071243537834.png)
+
+
+
+
+
+## 53、视频53：数据库数据窗体访问、修改和查找
+
+### 1、本节小结
+
+### 2、具体步骤
+
+2.1	头文件
+
+1. 核心模块头文件
+
+	```c++
+	#include <QtSql/QSqlDatabase>
+	#include <QtSql/QSqlError>
+	#include <QtSql/QSqlQuery>
+	```
+
+2. 用户接口层头文件
+
+	```c++
+	#include <QtSql/QSqlQueryModel>
+	#include <QtSql/QSqlTableModel>
+	#include <QtSql/QSqlRelationalTableModel>
+	#include <QTableView>
+	```
+
+2.2	创建 QSqlTableModel 类对象
+
+```c++
+QSqlTableModel * model;    
+```
+
+在Qt应用程序中使用模型-视图架构展示数据库表的数据。QSqlTableModel 是 QtSql 模块提供的一个模型类，用于与数据库中的单个表格进行交互。
+
+在用户接口层，QSqlTableModel 的作用是与视图部分（例如 QTableView）结合使用，将数据库表的数据呈现给用户，并提供了一些默认的编辑和更新功能。
+
+2.3	Ui界面中新建 Table View
+
+![image-20240206180228026](Qt笔记.assets/image-20240206180228026-17072137520081.png)
+
+2.4	创建 QSqlTableModel 变量
+
+```c++
+QSqlTableModel * model;    
+```
+
+提供了一个可以连接到数据库表的数据模型，使得你可以在 Qt 应用程序中方便地展示和编辑数据库表的内容：
+
+1. 连接数据库
+2. 提供数据
+3. 实现基本的数据操作
+4. 自动更新视图
+5. 支持编辑
+
+2.5	Qt 窗口中显示
+
+```c++
+// Qt 窗口中显示
+model = new QSqlTableModel(this); // 
+ui->tableView->setModel(model); // 将对象与 QTableView 控件关联，TableView 将显示 model 中的数据，并在表数据发生变化时自动更新。
+model->setTable("student"); // model 连接到名为 student 的数据库
+model->select(); // 从数据库中检索数据并将其加载到 QSqlTableModel 中
+```
+
+2.6	设置表头信息
+
+1. 代码
+
+	```c++
+	model->setHeaderData(0, Qt::Horizontal, "学号");
+	model->setHeaderData(1, Qt::Horizontal, "姓名");
+	model->setHeaderData(2, Qt::Horizontal, "年龄");
+	```
+
+2. 运行结果
+
+	<img src="Qt笔记.assets/image-20240206191344638.png" alt="image-20240206191344638" style="zoom:67%;" />
+
+2.7	设置 QSqlTableModel 的编辑策略
+
+```c++
+model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+```
+
+所有的更改将被缓存在模型中，直到调用 submitAll() 或 revertAll() 为止
+
+2.8	调用 submitAll() 或 revertAll()
+
+1. 代码
+
+	```c++
+	void Widget::on_pushButton_clicked()
+	{
+	    model->submitAll(); // 提交
+	}
+	
+	void Widget::on_pushButton_2_clicked()
+	{
+	    model->revertAll(); // 撤销
+	    model->submitAll();
+	}
+	```
+
+2. 运行结果
+
+	<img src="Qt笔记.assets/image-20240206192858509.png" alt="image-20240206192858509" style="zoom:67%;" />
+
+3. 修改后结果
+
+	<img src="Qt笔记.assets/image-20240206193005382.png" alt="image-20240206193005382" style="zoom:67%;" />
+
+	
+
+2.9	查找功能
+
+1. 设置 Ui 界面
+
+	<img src="Qt笔记.assets/image-20240206193618631.png" alt="image-20240206193618631" style="zoom:67%;" />
+
+2. 代码
+
+	```c++
+	void Widget::on_pushButton_3_clicked()
+	{
+	    QString name = ui->lineEdit->text();
+	    QString nm = QString("name = '%1'").arg(name);
+	    // 使用 QString 的格式化功能，构建了一个字符串 nm。
+	    // 该字符串包含了一个 SQL 查询条件，形式为 "name = '用户输入的文本'"。
+	    // 其中 %1 是一个占位符，通过 arg(name) 将前面获取的用户输入文本 name 替换到占位符位置，从而形成最终的查询条件字符串
+	    
+	    model->setFilter(nm); // 将上述构建的查询条件字符串 nm 应用于 QSqlTableModel 的过滤器（filter）属性
+	    //    name = 'Jack' （三列对应的是id、name、edge（即使使用 setHeaderData 修改了表头信息））
+	    //    model->setFilter("name = 'Jack'"); // 限定死了，只能查找 Jack
+	    
+	    model->select(); // 执行数据库查询操作
+	}
+	```
+
+3. 运行结果
+
+	<img src="Qt笔记.assets/image-20240206195430058.png" alt="image-20240206195430058" style="zoom:67%;" />
+
+### 3、源代码
+
+3.1	Create_DataSet.pro
+
+```c++
+QT       += core gui sql
+```
+
+3.2	widget.h
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+
+// 用户接口层包含的类
+#include <QtSql/QSqlQueryModel>
+#include <QtSql/QSqlTableModel>
+#include <QtSql/QSqlRelationalTableModel>
+#include <QTableView>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+private:
+    Ui::Widget *ui;
+    QSqlTableModel * model;
+};
+#endif // WIDGET_H
+```
+
+3.3	widget.cpp
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("dataset.db");
+    if(!db.open())
+    {
+        qDebug() << "Error: Failed to connect to the database." << db.lastError();
+    }
+    else
+    {
+        qDebug() << "Connect database successful!";
+    }
+
+    QSqlQuery sql_query;
+
+
+//    QString create_sql = "create table student(id int, name varchar(30), age int)";
+//    sql_query.prepare(create_sql); // 将传递给它的 SQL 查询语句进行预编译
+//    if(!sql_query.exec())
+//    {
+//        qDebug() << "Error, Failed to create table." << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "Table created";
+//    }
+
+
+//    // 插入
+//    QString insert_sql = "insert into student values(?, ?, ?)";
+//    // 使用 prepare 方法准备 SQL 查询语句
+//    sql_query.prepare(insert_sql);
+//    // 使用 addBindValue 方法绑定具体的值
+//    sql_query.addBindValue(1);
+//    sql_query.addBindValue("Rick");
+//    sql_query.addBindValue(10);
+//    // 执行 SQL 查询
+//    if(!sql_query.exec())
+//    {
+//        qDebug() << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "Insert Student NO.1!";
+//    }
+
+//    sql_query.prepare(insert_sql);
+//    sql_query.addBindValue(2);
+//    sql_query.addBindValue("Jack");
+//    sql_query.addBindValue(11);
+//    if(!sql_query.exec())
+//    {
+//        qDebug() << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "Insert Student NO.2!";
+//    }
+
+
+    // Qt 窗口中显示
+    model = new QSqlTableModel(this); //
+    ui->tableView->setModel(model); // 将对象与 QTableView 控件关联，TableView 将显示 model 中的数据，并在表数据发生变化时自动更新。
+    model->setTable("student"); // model 连接到名为 student 的数据库
+    model->select(); // 从数据库中检索数据并将其加载到 QSqlTableModel 中
+
+    // 设置表头信息
+    model->setHeaderData(0, Qt::Horizontal, "学号");
+    model->setHeaderData(1, Qt::Horizontal, "姓名");
+    model->setHeaderData(2, Qt::Horizontal, "年龄");
+
+    // 设置编辑策略
+    // 所有的更改将被缓存在模型中，直到调用 submitAll() 或 revertAll() 为止
+    model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    model->submitAll(); // 提交
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    model->revertAll(); // 撤销
+    model->submitAll();
+}
+
+void Widget::on_pushButton_3_clicked()
+{
+    QString name = ui->lineEdit->text();
+    QString nm = QString("name = '%1'").arg(name);
+    // 使用 QString 的格式化功能，构建了一个字符串 nm。
+    // 该字符串包含了一个 SQL 查询条件，形式为 "name = '用户输入的文本'"。
+    // 其中 %1 是一个占位符，通过 arg(name) 将前面获取的用户输入文本 name 替换到占位符位置，从而形成最终的查询条件字符串
+
+    model->setFilter(nm); // 将上述构建的查询条件字符串 nm 应用于 QSqlTableModel 的过滤器（filter）属性
+    //    name = 'Jack' （三列对应的是id、name、edge（即使使用 setHeaderData 修改了表头信息））
+    //    model->setFilter("name = 'Jack'"); // 限定死了，只能查找 Jack
+
+    model->select(); // 执行数据库查询操作
+}
+```
+
+
+
+
+
+## 54、视频54：Qt进程启动另外一个进程
+
+### 1、本节小结
+
+### 2、具体步骤
+
+2.1	包含头文件
+
+```c++
+#include <QProcess>
+```
+
+2.2	创建 QProcess 变量
+
+```c++
+QProcess myprocess;
+```
+
+2.3	设置 Ui 界面
+
+<img src="Qt笔记.assets/image-20240206202344429.png" alt="image-20240206202344429" style="zoom:67%;" />
+
+2.4	编写槽函数相应内容
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    myprocess.start("/home/yin-roc/Qt/install/5.13.2/gcc_64/bin/assistant");
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    qDebug() << "hello world";
+}
+```
+
+2.5	运行结果
+
+打开一个程序的同时还能操作另一个程序：
+
+<img src="Qt笔记.assets/image-20240206202613074.png" alt="image-20240206202613074" style="zoom:67%;" />
+
+2.6	设置阻塞函数
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    myprocess.start("/home/yin-roc/Qt/install/5.13.2/gcc_64/bin/assistant");
+    myprocess.waitForFinished();
+}
+```
+
+### 3、源代码
+
+3.1	widget.h文件
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QProcess>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+private:
+    Ui::Widget *ui;
+    QProcess myprocess;
+};
+#endif // WIDGET_H
+```
+
+
+
+3.2	widget.cpp
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+void Widget::on_pushButton_clicked()
+{
+    myprocess.start("/home/yin-roc/Qt/install/5.13.2/gcc_64/bin/assistant");
+    myprocess.waitForFinished();
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    qDebug() << "hello world";
+}
+```
+
+
+
+
+
+## 55、视频55：Qt进程间通信
+
+### 1、本节内容
+
+### 2、具体步骤
+
+写：
+
+2.1	创建 QSharedMemory 类对象
+
+```c++
+#include <QSharedMemory>
+
+QSharedMemory sharememory;
+```
+
+该类用于在多个进程之间共享内存。
+
+2.2	为共享内存对象设置一个唯一的键（key）
+
+```c++
+sharememory.setKey("My_Shared_Memory");
+```
+
+这个键用于唯一标识共享内存对象，以便不同的进程能够通过这个键来访问相同的共享内存区域。
+
+设置键是为了在不同的进程之间建立共享内存通信的桥梁，使它们可以通过相同的键访问相同的共享内存区域，以进行数据的读写和通信。
+
+2.3	设置 widget.ui 界面
+
+![image-20240208203202234](Qt笔记.assets/image-20240208203202234-17073955234751.png)
+
+2.4	写字符串到共享内存
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    if(sharedmemory.isAttached()) // 是否处于被绑定状态中
+    {
+        sharedmemory.detach(); // 解绑
+    }
+
+    if(!sharedmemory.create(100, QSharedMemory::ReadWrite)) // 尝试创建一个新的共享内存区域
+    {
+        qDebug() << "Failed to create shared memory!";
+        return;
+    }
+
+    sharedmemory.lock(); // 共享内存上锁,以确保在修改共享内存时不会被其他进程干扰。
+    //--------临界区的内容不允许其他进程访问---------------
+    QByteArray arr = ui->lineEdit->text().toLatin1();
+
+    // memcpy(void * dst, void * src, size_t);
+    // 拷贝
+    memcpy(sharedmemory.data(), arr.data(), (size_t)qMin(sharedmemory.size(), ui->lineEdit->text().size()));
+
+    //-----------------------------------------
+    sharedmemory.unlock(); // 解锁共享内存，表示临界区操作结束，其他进程可以访问共享内存
+}
+```
+
+2.5	memcpy语法
+
+```c++
+memcpy(void * dst, void * src, size_t);
+
+memcpy(sharedmemory.data(), arr.data(), (size_t)qMin(sharedmemory.size(), ui->lineEdit->text().size()));
+```
+
+```
+void *QSharedMemory::data()
+```
+
+返回指向共享内存段内容的指针（如果已附加）。否则，它返回空指针。在从共享内存读取或写入之前，请记得使用 lock() 锁定共享内存，并在完成后使用 unlock() 释放锁。
+
+
+
+读：
+
+2.6	创建 QSharedMemory 类对象
+
+```c++
+#include <QSharedMemory>
+
+QSharedMemory sharedmemory;
+```
+
+2.7	设置 widget.ui 界面
+
+<img src="Qt笔记.assets/image-20240208205153711.png" alt="image-20240208205153711" style="zoom:67%;" />
+
+2.8	创建唯一的键
+
+```c++
+sharedmemory.setKey("My_Shared_Memory");
+```
+
+==tips：注意读写的键值要一致==
+
+2.9	 读取槽函数
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    if(!sharedmemory.attach())
+    {
+        qDebug() << "Attach sharedmemory failed!";
+        return;
+    }
+    
+    sharedmemory.lock();
+    char *arr = new char[sharedmemory.size()];
+    memcpy(arr, sharedmemory.data(), (size_t)sharedmemory.size());
+    ui->label->setText(QString(arr));
+    sharedmemory.unlock();
+    sharedmemory.detach();
+}
+```
+
+解绑共享内存的操作 sharedmemory.detach() 主要是为了释放当前进程对共享内存的控制权。这样做是因为**读取操作通常是临时的，一旦读取完成，就不再需要持有对共享内存的控制。**
+
+**写入操作通常不需要立即释放对共享内存的控制，因为可能会有其他进程在后续的时间内继续写入数据。**通常，写入操作完成后，进程会保持对共享内存的控制，以便它可以继续在需要时写入数据。
+
+2.10	运行结果
+
+![image-20240208210935428](Qt笔记.assets/image-20240208210935428-17073977764303.png)
+
+### 3、源码
+
+见github
+
+
+
+
+
+## 56、视频56：Qt多线程并发操作
+
+### 1、本节小结
+
+一个 Qt 程序界面做并行界面设计，与读写两个进程的区别。
+
+使用 Qt 线程类： QThread
+
+### 2、具体步骤
+
+2.1	创建自定义类：MyThread
+
+```c++
+#include <QThread>
+
+class MyThread : public QThread
+{
+public:
+    MyThread() { stopped = false;}
+    void stop();
+    
+protected:
+    void run(); // 线程从 run 函数开始运行，类似于 main 函数，run 函数的调用靠的是 QThread 类里面的 start
+    
+private:
+    bool stopped;    
+};
+```
+
+2.2	定义 Mythread 类的方法
+
+```c++
+void MyThread::run()
+{
+    int i = 0;
+    while(!stopped)
+    {
+        qDebug() << "MyThread: " << i;
+        msleep(1000);
+        i += 2;
+    }
+    
+    stopped = false;    
+}
+
+void MyThread::stop()
+{
+    stopped = true;
+}
+```
+
+2.3	widget.ui 界面如图所示
+
+![image-20240215153933075](Qt笔记.assets/image-20240215153933075-17079827743751.png)
+
+2.4	槽函数
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include "mythread.h"
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    thread.start();
+    ui->pushButton->setEnabled(false);
+    ui->pushButton_2->setEnabled(true);
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    if(thread.isRunning())
+    {
+        thread.stop();
+        ui->pushButton->setEnabled(true);
+        ui->pushButton_2->setEnabled(false);
+    }
+}
+```
+
+2.5	运行结果
+
+<img src="Qt笔记.assets/image-20240215160323704-17079842046762.png" alt="image-20240215160323704" style="zoom:67%;" />
+
+2.6 同理创建第二个类来实现奇数的输出
+
+最终结果如图所示：
+
+<img src="Qt笔记.assets/image-20240215160619075-17079843800853.png" alt="image-20240215160619075" style="zoom:67%;" />
+
+### 3、源码
+
+
+
+
+
+## 57、视频57：Qt 线程间同步——信号量
+
+### 1、本节小结
+
+1.1	QSemaphore 类
+
+`QSemaphore` 是一个用于线程同步的类，它提供了一种机制，允许一个或多个线程在共享资源上进行协调。Semaphore 是一种计数信号量，用于管理对资源的访问。
+
+具体而言，`QSemaphore` 可以用于限制同时访问共享资源的线程数量。它通过一个计数器来实现，当线程请求访问资源时，计数器减一，当线程释放资源时，计数器加一。如果计数器的值为正，那么线程可以继续执行，否则线程需要等待。
+
+以下是 `QSemaphore` 的一些常用方法：
+
+- `QSemaphore(int n)`：构造函数，用于初始化计数器为 n。
+- `void acquire()`：请求一个资源，如果计数器大于零，计数器减一，否则线程将被阻塞。
+- `bool tryAcquire(int n = 1)`：尝试请求 n 个资源，如果成功返回 true，否则返回 false。
+- `void release(int n = 1)`：释放 n 个资源，将计数器加上 n。
+- `int available()`：返回当前可用的资源数量。
+
+通过 `QSemaphore`，可以有效地管理多线程访问共享资源的情况，确保线程之间的同步和协调。
+
+1.2	信号量
+
+多个线程抢夺同一资源，比如没读完就往其中写入或者没写完就往外读。
+
+信号量 > 0 运行；信号量 = 0 或者 < 0 不运行。
+
+### 2、具体步骤
+
+2.1	包含类
+
+```
+#include <QSemaphore> // 信号量
+```
+
+2.2	定义生产者类
+
+```c++
+class Producer : public QThread
+{
+    Q_OBJECT
+public:
+    Producer(){ stopped = false;}
+    void stop();
+
+protected:
+    void run(); // 线程从 run 函数开始运行，类似于 main 函数，run 函数的调用靠的是 QThread 类里面的 start
+
+private:
+    bool stopped;
+
+};
+```
+
+2.3	定义消费者类
+
+```c++
+class Consumer : public QThread
+{
+    Q_OBJECT
+public:
+    Consumer(){ stopped = false;}
+    void stop();
+
+protected:
+    void run(); // 线程从 run 函数开始运行，类似于 main 函数，run 函数的调用靠的是 QThread 类里面的 start
+
+private:
+    bool stopped;
+
+};
+```
+
+2.4	创建生产者和消费者对象
+
+```c++
+Producer producer;
+Consumer consumer;
+```
+
+2.5	生产者方法实现
+
+```c++
+const int size = 10;
+unsigned int buffer[size];
+QSemaphore usedSem(0);
+QSemaphore unusedSem(size);
+
+void Producer::run()
+{
+    int i = 0;
+    while(!stopped)
+    {
+        unusedSem.acquire(); // unusedSem 减 1：请求一个资源，如果计数器大于零，计数器减一，否则线程将被阻塞
+        buffer[i] = i;
+        msleep(1000);
+        qDebug() << "Write to the shared memory";
+        usedSem.release(); // usedSem 加 1
+        i++;
+        if(i == size)
+            i = 0;
+    }
+    stopped = false;
+}
+
+void Producer::stop()
+{
+    stopped = true;
+}
+```
+
+2.6	消费者方法实现
+
+```c++
+void Consumer::run()
+{
+    int i = 1;
+    while(!stopped)
+    {
+        usedSem.acquire();
+        qDebug() << buffer[i];
+        unusedSem.release();
+        i++;
+        if(i == size)
+            i = 0;
+    }
+    stopped = false;
+}
+
+void Consumer::stop()
+{
+    stopped = true;
+}
+```
+
+2.7	现象结果
+
+1. 当生产者开始制造时：判断 unusedSem 大于 0 则代表需要制作；执行相关操作后；usedSem 加 1代表消费者可获得新产品 + 1。
+2. 当消费者开始消费时：判断 usedSem 大于 0 则代表可以消费；执行相关操作后；unusedSem 加1代表生产者可以再制作一个一个产品。
+3. 类似于停车位，生产者往10个车位里面停车，消费者从车位里面拿车。unusedSem 代表剩余车位，usedSem 代表车。
+
+
+
+
+
+## 58、视频58：TCP服务器端
+
+### 1、本节内容
+
+TCP：传输层协议，属于计算机网络协议。
+
+服务端有两套套接字：监听（QTcpServer）和通信（QTcpSocket）
+
+监听的listen函数，包含两个参数：IP（服务端） 和 Port。
+
+1. 实例化 `QTcpServer` 对象，它将用于监听客户端的连接请求；
+2. 调用 `listen` 方法开始监听连接。指定服务器应该监听的IP地址和端口号；
+3. 使用 `newConnection` 信号连接槽函数，以便在有新连接时执行相应的操作；
+4. 在 `NewConnection` 对应的槽函数中，使用 `nextPendingConnection` 获取新的连接套接字（通信套接字）；
+5. 处理通信：为每个连接创建一个 `QTcpSocket` 对象，用于实际的数据传输。设置相关的信号槽以处理数据的接收、发送等操作。
+6. 实现数据发送：使用 `QTcpSocket` 对象向客户端发送数据。
+
+
+
+### 2、具体步骤
+
+2.1	加入包
+
+```c++
+QT       += core gui network
+```
+
+2.2	包含头文件
+
+分别提供了用于创建TCP服务器和TCP客户端的类：
+
+```c++
+#include <QTcpServer>
+#include <QTcpSocket>
+```
+
+2.3	头文件中创建对象
+
+```c++
+QTcpServer * tcpserver; // 监听套接字
+QTcpSocket * clientConnection = nullptr; // 通信套接字
+```
+
+2.4	设置 widget.ui 界面
+
+<img src="Qt笔记.assets/image-20240216173745418.png" alt="image-20240216173745418" style="zoom:67%;" />
+
+2.5	为监听套接字分配内存
+
+```c++
+tcpserver = new QTcpServer(this);
+```
+
+2.6	监听连接
+
+调用 `listen` 方法开始监听连接。指定服务器应该监听的IP地址和端口号：
+
+```c++
+tcpserver->listen(QHostAddress::LocalHost, ui->lineEdit->text().toInt());
+```
+
+2.7	处理新连接
+
+使用 `newConnection` 信号连接槽函数，以便在有新连接时执行相应的操作：
+
+```c++
+connect(tcpserver, &QTcpServer::newConnection, this, [&](){});
+```
+
+2.8	服务器端用于处理客户端发送的数据
+
+```c++
+connect(tcpserver, &QTcpServer::newConnection, this, [&](){
+	clientConnection = tcpserver->nextPendingConnection(); // 获取新的连接套接字（通信）
+
+	clientConnection->write("Welcome to connect to the server!"); // 向客户端发送数据
+
+	ui->textEdit->append("New connection......");
+
+	connect(clientConnection, &QTcpSocket::readyRead, this, [&](){ // 处理客户端发送的数据
+		QByteArray array = clientConnection->readAll();
+		ui->textEdit->append("客户端：" + array);
+		ui->textEdit->setAlignment(Qt::AlignRight);
+	});
+});
+```
+
+2.9	按钮槽函数
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    if(!clientConnection) // 判断是否连接
+    {
+        qDebug() << "No connection!";
+        return;
+    }
+
+    clientConnection->write(ui->textEdit_2->toPlainText().toUtf8());
+    ui->textEdit->append("服务器：" + ui->textEdit_2->toPlainText());
+    ui->textEdit->setAlignment(Qt::AlignLeft);
+    ui->textEdit_2->clear();
+}
+```
+
+### 3、源代码
+
+
+
+
+
+## 59、视频59：TCP客户端
+
+### 1、本节内容
+
+客户端只需要一个套接字：QTcpSocket类的对象
+
+1. 连接服务器
+2. 接收数据
+3. 发送数据
+
+### 2、具体步骤
+
+2.1	添加包
+
+```c++
+QT       += core gui network
+```
+
+2.2	包含头文件、创建对象
+
+```c++
+#include <QTcpServer>
+#include <QTcpSocket>
+```
+
+```c++
+QTcpSocket * tcpSocket; // 用于处理与服务器的TCP连接
+```
+
+2.3	为 QTcpSocket 对象分配内存
+
+```c++
+tcpSocket = new QTcpSocket(this);
+```
+
+2.4	设置 widget.ui 界面
+
+<img src="Qt笔记.assets/image-20240217135218359.png" alt="image-20240217135218359" style="zoom:67%;" />
+
+2.5	连接服务器
+
+格式：connectToHost(serverIP, serverPort)
+
+```c++
+tcpSocket->connectToHost(ui->lineEdit->text(), ui->lineEdit_2->text().toInt());
+```
+
+2.6	接收数据
+
+readyRead信号：信号是在套接字（socket）接收到新数据时发射的。这个信号用于通知应用程序有可用的数据可以读取。
+
+readAll()：读取所有的可用数据
+
+```
+connect(tcpSocket, &QTcpSocket::readyRead, this, [&](){
+	QByteArray array = tcpSocket->readAll();
+	ui->textEdit->append("服务器：" + array);
+});
+```
+
+2.7	发送数据
+
+```c++
+tcpSocket->write(ui->textEdit_2->toPlainText().toUtf8());
+```
+
+2.8	运行结果如图所示
+
+<img src="Qt笔记.assets/image-20240217141524396.png" alt="image-20240217141524396" style="zoom:67%;" />
+
+### 3、源码
+
+
+
+
+
+## 60、视频60：UDP发送端—接收端—通信1
+
+### 1、本节内容
+
+TCP（Transmission Control Protocol）和UDP（User Datagram Protocol）是两种不同的传输层协议。
+
+1. 连接导向 vs 无连接：
+	- TCP： 提供面向连接的服务，通过三次握手建立可靠的连接，确保数据的可靠传输，以及数据的按序传递。有错误检测和重传机制，**确保数据的可靠性**。
+	- UDP： 是一种**面向无连接的协议，不建立连接，不保证可靠性，也不保证数据的按序传递**。UDP更适用于那些对实时性要求较高、能够容忍一定数据丢失的应用场景。
+2. 可靠性：
+	- TCP： 提供可靠的、面向连接的服务。通过序号、确认和重传机制来确保数据的可靠性，适用于对数据完整性有严格要求的应用，如文件传输、网页浏览等。
+	- UDP： 不提供可靠性保证。==适用于那些对实时性要求高，可以容忍一定数据丢失的应用==，如语音通话、视频流等。
+3. 数据流模型：
+	- TCP： 提供面向字节流的服务，将数据视为连续的字节流，保证数据的有序性和完整性。
+	- UDP： 以数据报为单位进行传输，每个数据报独立于其他数据报，没有顺序性的要求。
+4. 开销：
+	- TCP： 因为提供可靠性和有序性，有较大的开销，包含了连接管理、流量控制、拥塞控制等机制。
+	- UDP： 由于是无连接、不提供可靠性保证的协议，开销相对较小。
+5. 适用场景：
+	- TCP： 适用于要求可靠传输的应用，如文件传输、电子邮件等。
+	- UDP： 适用于对实时性要求较高，能够容忍一定数据丢失的应用，如实时音视频通信、在线游戏等。
+
+选择使用TCP还是UDP取决于==应用的需求==，例如==对数据可靠性和有序性的要求==，以及==对通信开销的容忍程度==。
+
+### 2、具体步骤
+
+==Receiver项目：==
+
+2.1	添加库
+
+```c++
+QT       += core gui network
+```
+
+2.2	包头文件
+
+```c++
+#include <QUdpSocket>
+```
+
+2.3	创建对象
+
+```c++
+QUdpSocket * receiver;
+```
+
+2.4	初始化对象并做前期准备
+
+1. 初始化对象
+
+	```
+	receiver = new QUdpSocket(this);
+	```
+
+2. 设置 widget.ui 界面
+
+	<img src="Qt笔记.assets/image-20240217155036503.png" alt="image-20240217155036503" style="zoom:67%;" />
+
+3. 设置窗体名称等
+
+	```c++
+	setWindowTitle("接收端");
+	
+	ui->lineEdit->setText("127.0.0.1");
+	```
+
+2.5	主要程序
+
+```c++
+void Widget::on_pushButton_2_clicked()
+{
+    // 绑定端口号
+    receiver->bind(ui->lineEdit_2->text().toInt()); 
+    
+    // QUdpSocket::readyRead 信号
+    connect(receiver, &QUdpSocket::readyRead, this, [&](){
+        // 创建一个 QByteArray 对象 datagram，用于存储接收到的数据
+        QByteArray datagram;
+        datagram.resize(receiver->pendingDatagramSize()); // 使用 pendingDatagramSize 函数获取当前待处理数据报的大小
+        
+        // 使用 readDatagram 函数从 receiver 接收数据
+        receiver->readDatagram(datagram.data(), datagram.size());
+        ui->textEdit->append("对方：" + datagram);
+    });
+
+    ui->pushButton_2->setEnabled(false);
+    ui->lineEdit_2->setEnabled(false);
+}
+```
+
+
+
+==Sender项目：==
+
+2.1	添加库
+
+```c++
+QT       += core gui network
+```
+
+2.2	包含头文件
+
+```c++
+#include <QUdpSocket>
+```
+
+2.3	创建 QUdpSocket 对象
+
+```c++
+QUdpSocket * sender;
+```
+
+2.4	widget.ui 界面设置
+
+<img src="Qt笔记.assets/image-20240217161240491.png" alt="image-20240217161240491" style="zoom:67%;" />
+
+2.5	分配内存
+
+```c++
+sender = new QUdpSocket(this);
+```
+
+2.6	主要程序
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    QByteArray datagram = ui->textEdit_2->toPlainText().toUtf8();
+    
+    // 将数据报发送到指定的目标地址和端口号
+    // 参数解释：
+	// datagram.data(): 发送的数据的指针，这里是先前准备好的 UTF-8 编码字节数组的指针。
+	// datagram.size(): 发送的数据的大小。
+	// QHostAddress(ui->lineEdit->text()): 目标主机的 IP 地址，从界面的 lineEdit 中获取。
+	// ui->lineEdit_2->text().toInt(): 目标主机的端口号，从界面的 lineEdit_2 中获取并转换为整数。
+    sender->writeDatagram(datagram.data(), datagram.size(), QHostAddress(ui->lineEdit->text()), ui->lineEdit_2->text().toInt());
+    ui->textEdit->append("本机：" + ui->textEdit_2->toPlainText());
+    ui->textEdit_2->clear();
+
+}
+```
+
+2.7	运行结果
+
+<img src="Qt笔记.assets/image-20240217161822062.png" alt="image-20240217161822062" style="zoom:67%;" />
+
+### 3、源码
+
+
+
+
+
+## 61、视频61：UDP发送端—接收端—通信2
+
+### 1、本节内容
+
+视频60的通信1：发送端的输入端发出，接收端的聊天记录收到消息
+
+本次视频的通信2：主机1的输入端发出，主机2的聊天记录中显示。
+
+### 2、具体步骤
+
+主机1发送按钮相关槽函数：
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    QByteArray datagram = ui->textEdit_2->toPlainText().toUtf8();
+    receiver->writeDatagram(datagram.data(), datagram.size(), QHostAddress(ui->lineEdit->text()), ui->lineEdit_3->text().toInt());
+    ui->textEdit->append("本机：" + ui->textEdit_2->toPlainText());
+    ui->textEdit_2->clear();
+}
+```
+
+主机2：
+
+<img src="Qt笔记.assets/image-20240218141418659.png" alt="image-20240218141418659" style="zoom:67%;" />
+
+使用UDP套接字实现数据的接收和显示
+
+```c++
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    setWindowTitle("主机2");
+    sender = new QUdpSocket(this);
+
+
+    ui->lineEdit_3->setText("8888");
+    sender->bind(ui->lineEdit_3->text().toInt());
+    connect(sender, &QUdpSocket::readyRead, this, [&](){
+        QByteArray datagram;
+        datagram.resize(sender->pendingDatagramSize());
+        sender->readDatagram(datagram.data(), datagram.size());
+        ui->textEdit->append("对方：" + datagram);
+    });
+
+}
+```
+
+### 3、源码
+
+Receiver工程：
+
+```
+QT       += core gui network
+```
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QUdpSocket>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_clicked();
+
+private:
+    Ui::Widget *ui;
+    QUdpSocket * receiver;
+
+};
+#endif // WIDGET_H
+
+```
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    setWindowTitle("主机1");
+
+    ui->lineEdit->setText("127.0.0.1");
+
+    receiver = new QUdpSocket(this);
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+void Widget::on_pushButton_2_clicked()
+{
+    receiver->bind(ui->lineEdit_2->text().toInt()); // 绑定端口号
+    // QUdpSocket::readyRead 信号
+    connect(receiver, &QUdpSocket::readyRead, this, [&](){
+        // 创建一个 QByteArray 对象 datagram，用于存储接收到的数据
+        QByteArray datagram;
+        datagram.resize(receiver->pendingDatagramSize()); // // 使用 pendingDatagramSize 函数获取当前待处理数据报的大小
+        
+        // 使用 readDatagram 函数从 receiver 接收数据
+        receiver->readDatagram(datagram.data(), datagram.size());
+        ui->textEdit->append("对方：" + datagram);
+    });
+
+    ui->pushButton_2->setEnabled(false);
+    ui->lineEdit_2->setEnabled(false);
+}
+
+void Widget::on_pushButton_clicked()
+{
+    QByteArray datagram = ui->textEdit_2->toPlainText().toUtf8();
+    receiver->writeDatagram(datagram.data(), datagram.size(), QHostAddress(ui->lineEdit->text()), ui->lineEdit_3->text().toInt());
+    ui->textEdit->append("本机：" + ui->textEdit_2->toPlainText());
+    ui->textEdit_2->clear();
+}
+
+```
+
+
+
+Sender工程：
+
+```
+QT       += core gui network
+```
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QUdpSocket>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+private:
+    Ui::Widget *ui;
+    QUdpSocket * sender;
+};
+#endif // WIDGET_H
+```
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    setWindowTitle("主机2");
+    sender = new QUdpSocket(this);
+
+
+    ui->lineEdit_3->setText("8888");
+    sender->bind(ui->lineEdit_3->text().toInt());
+    connect(sender, &QUdpSocket::readyRead, this, [&](){
+        QByteArray datagram;
+        datagram.resize(sender->pendingDatagramSize());
+        sender->readDatagram(datagram.data(), datagram.size());
+        ui->textEdit->append("对方：" + datagram);
+    });
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    QByteArray datagram = ui->textEdit_2->toPlainText().toUtf8();
+    sender->writeDatagram(datagram.data(), datagram.size(), QHostAddress(ui->lineEdit->text()), ui->lineEdit_2->text().toInt());
+    ui->textEdit->append("本机：" + ui->textEdit_2->toPlainText());
+    ui->textEdit_2->clear();
+
+}
+```
+
+
+
+
+
+## 62、视频62：TCP传输文件小案例—客户端
+
+### 1、本节内容
+
+### 2、具体步骤
+
+2.1	添加库
+
+```c++
+QT       += core gui network
+```
+
+2.2	添加头文件和相应类对象
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QTimer>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+private:
+    Ui::Widget *ui;
+    QTcpSocket * tcpSocket;
+    QString fileName;
+    qint64 fileSize;
+    QFile file;
+    QTimer * mytimer;
+};
+#endif // WIDGET_H
+```
+
+2.3	客户端通信套接字通信实现
+
+```c++
+tcpSocket = new QTcpSocket(this);
+
+    connect(tcpSocket, &QTcpSocket::readyRead, this, [&](){
+        QByteArray array = tcpSocket->readAll();
+        qDebug() << "服务器: " << array;
+    });
+```
+
+2.4	widget.ui 界面设计
+
+![image-20240218171350228](Qt笔记.assets/image-20240218171350228-17082476314991.png)
+
+2.5	连接按钮槽函数
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    tcpSocket->connectToHost(ui->lineEdit->text(), ui->lineEdit_2->text().toInt());
+}
+```
+
+2.6	打开文件槽函数
+
+```c++
+void Widget::on_pushButton_2_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this); // 打开文件
+
+    QFileInfo FileData(filePath);
+    fileName = FileData.fileName(); // 得到文件名称
+    fileSize = FileData.size(); // 得到文件大小
+
+    qDebug() << "文件名： " << fileName;
+    qDebug() << "文件大小： " << fileSize;
+
+    if(filePath.isEmpty())
+    {
+        ui->label_3->setText(filePath);
+        file.setFileName(filePath);
+        file.open(QIODevice::ReadOnly);
+
+    }
+
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(fileSize / 1024);
+    ui->progressBar->setValue(0);
+}
+```
+
+2.7	发送按钮槽函数
+
+```c++
+void Widget::on_pushButton_3_clicked()
+{
+    // 发送：“我的小苹果.mp3**313256” (先名称后文件大小)
+    QString head = fileName + "**" + QString::number(fileSize);
+    qint64 length = tcpSocket->write(head.toUtf8());
+    if(length > 0) // 发送成功
+    {
+        // 延时防止粘包
+        mytimer->start(20);
+    }
+    else // 发送失败
+    {
+        file.close();
+    }
+}
+```
+
+2.8	定时器槽函数
+
+期间设置发送及其具体细节
+
+```c++
+mytimer = new QTimer(this);
+    connect(mytimer, &QTimer::timeout, this, [&](){
+        mytimer->stop();
+
+        qint64 len;
+        qint64 sendSize = 0;
+
+        do{
+            char buf[4*1024] = {0};
+            len = 0;
+            len = file.read(buf, sizeof(buf)); // 每次提取多少字节
+            tcpSocket->write(buf, len); // 后续内容不足 4kb，所以用 len，而不用 sizeof(buf)
+            sendSize += len;
+            ui->progressBar->setValue(sendSize / 1024);
+        }while(len > 0);
+        if(sendSize == fileSize)
+        {
+            file.close();
+            tcpSocket->disconnect();
+            tcpSocket->close();
+        }
+    });
+```
+
+### 3、源码
+
+3.1	.pro文件
+
+```
+QT       += core gui network
+```
+
+3.2	widget.h文件
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QTimer>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+private:
+    Ui::Widget *ui;
+    QTcpSocket * tcpSocket;
+    QString fileName;
+    qint64 fileSize;
+    QFile file;
+    QTimer * mytimer;
+};
+#endif // WIDGET_H
+
+```
+
+3.3	widget.cpp文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    tcpSocket = new QTcpSocket(this);
+
+    connect(tcpSocket, &QTcpSocket::readyRead, this, [&](){
+        QByteArray array = tcpSocket->readAll();
+        qDebug() << "服务器: " << array;
+    });
+
+    mytimer = new QTimer(this);
+    connect(mytimer, &QTimer::timeout, this, [&](){
+        mytimer->stop();
+
+        qint64 len;
+        qint64 sendSize = 0;
+
+        do{
+            char buf[4*1024] = {0};
+            len = 0;
+            len = file.read(buf, sizeof(buf)); // 每次提取多少字节
+            tcpSocket->write(buf, len); // 后续内容不足 4kb，所以用 len，而不用 sizeof(buf)
+            sendSize += len;
+            ui->progressBar->setValue(sendSize / 1024);
+        }while(len > 0);
+        if(sendSize == fileSize)
+        {
+            file.close();
+            tcpSocket->disconnect();
+            tcpSocket->close();
+        }
+    });
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::on_pushButton_clicked()
+{
+    tcpSocket->connectToHost(ui->lineEdit->text(), ui->lineEdit_2->text().toInt());
+}
+
+
+
+void Widget::on_pushButton_2_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(this); // 打开文件
+
+    QFileInfo FileData(filePath);
+    fileName = FileData.fileName(); // 得到文件名称
+    fileSize = FileData.size(); // 得到文件大小
+
+    qDebug() << "文件名： " << fileName;
+    qDebug() << "文件大小： " << fileSize;
+
+    if(!filePath.isEmpty())
+    {
+        ui->label_3->setText(filePath);
+        file.setFileName(filePath);
+        file.open(QIODevice::ReadOnly);
+
+    }
+
+    ui->progressBar->setMinimum(0);
+    ui->progressBar->setMaximum(fileSize / 1024);
+    ui->progressBar->setValue(0);
+
+}
+
+void Widget::on_pushButton_3_clicked()
+{
+    // 发送：“我的小苹果.mp3**313256” (先名称后文件大小)
+    QString head = fileName + "**" + QString::number(fileSize);
+    qint64 length = tcpSocket->write(head.toUtf8());
+    if(length > 0) // 发送成功
+    {
+        // 延时防止粘包
+        mytimer->start(20);
+    }
+    else // 发送失败
+    {
+        file.close();
+    }
+
+}
+```
+
+
+
+
+
+## 63、视频63：TCP传输文件小案例—服务端
+
+### 1、本节内容
+
+### 2、具体步骤
+
+2.1	添加库
+
+```c++
+QT       += core gui network
+```
+
+2.2	包含头文件和创建对应类对象
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QFile>
+#include <QMessageBox>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+private:
+    Ui::Widget *ui;
+    QTcpServer * tcpserver; // 监听套接字
+    QTcpSocket * clientConnection = nullptr; // 通信套接字
+
+    bool headInfo = true;
+    QString fileName;
+    qint64 fileSize;
+    qint64 recvSize;
+    QFile file;
+};
+#endif // WIDGET_H
+
+```
+
+2.3	设置 widget.ui 界面
+
+<img src="Qt笔记.assets/image-20240218194211569-17082565327881.png" alt="image-20240218194211569" style="zoom:67%;" />
+
+2.4	构造函数初始化设置
+
+```c++
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    ui->lineEdit->setText("8080");
+
+    tcpserver = new QTcpServer(this);
+}
+```
+
+2.5	监听按钮槽函数设置
+
+```c++
+void Widget::on_pushButton_clicked()
+{
+    tcpserver->listen(QHostAddress::LocalHost, ui->lineEdit->text().toInt());
+
+    connect(tcpserver, &QTcpServer::newConnection, this, [&](){
+        clientConnection = tcpserver->nextPendingConnection(); // 获取新的连接套接字
+
+        clientConnection->write("Welcome to connect to the server!");
+
+        connect(clientConnection, &QTcpSocket::readyRead, this, [&](){
+            QByteArray array = clientConnection->readAll();
+            if(headInfo)
+            {
+                headInfo = false;
+                recvSize = 0;
+
+                fileName = QString(array).section("**", 0, 0);
+                fileSize = QString(array).section("**", 1, 1).toInt();
+
+                file.setFileName(fileName);
+                file.open(QIODevice::WriteOnly);
+
+                ui->progressBar->setMinimum(0);
+                ui->progressBar->setMaximum(fileSize / 1024);
+                ui->progressBar->setValue(0);
+
+            }
+            else
+            {
+
+                qint64 length = file.write(array);
+                if(length > 0)
+                    recvSize += length;
+                ui->progressBar->setValue(recvSize / 1024);
+                if(recvSize == fileSize)
+                {
+                    QMessageBox::information(this, "完成", "文件接收完成");
+                    file.close();
+                }
+            }
+        });
+    });
+
+    ui->pushButton->setEnabled(false);
+}
+```
+
+
+
+### 3、源码
+
+3.1	库添加
+
+```c++
+QT       += core gui network
+```
+
+3.2	widget.h 文件
+
+```c++
+#ifndef WIDGET_H
+#define WIDGET_H
+
+#include <QWidget>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QFile>
+#include <QMessageBox>
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class Widget; }
+QT_END_NAMESPACE
+
+class Widget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    Widget(QWidget *parent = nullptr);
+    ~Widget();
+
+private slots:
+    void on_pushButton_clicked();
+
+private:
+    Ui::Widget *ui;
+    QTcpServer * tcpserver; // 监听套接字
+    QTcpSocket * clientConnection = nullptr; // 通信套接字
+
+    bool headInfo = true;
+    QString fileName;
+    qint64 fileSize;
+    qint64 recvSize;
+    QFile file;
+};
+#endif // WIDGET_H
+```
+
+3.3	widget.cpp文件
+
+```c++
+#include "widget.h"
+#include "ui_widget.h"
+#include <QDebug>
+
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+{
+    ui->setupUi(this);
+
+    ui->lineEdit->setText("8080");
+
+    tcpserver = new QTcpServer(this);
+
+
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+
+void Widget::on_pushButton_clicked()
+{
+    tcpserver->listen(QHostAddress::LocalHost, ui->lineEdit->text().toInt());
+
+    connect(tcpserver, &QTcpServer::newConnection, this, [&](){
+        clientConnection = tcpserver->nextPendingConnection(); // 获取新的连接套接字
+
+        clientConnection->write("Welcome to connect to the server!");
+
+        connect(clientConnection, &QTcpSocket::readyRead, this, [&](){
+            QByteArray array = clientConnection->readAll();
+            if(headInfo)
+            {
+                headInfo = false;
+                recvSize = 0;
+
+                fileName = QString(array).section("**", 0, 0);
+                fileSize = QString(array).section("**", 1, 1).toInt();
+
+                file.setFileName(fileName);
+                file.open(QIODevice::WriteOnly);
+
+                ui->progressBar->setMinimum(0);
+                ui->progressBar->setMaximum(fileSize / 1024);
+                ui->progressBar->setValue(0);
+
+            }
+            else
+            {
+
+                qint64 length = file.write(array);
+                if(length > 0)
+                    recvSize += length;
+                ui->progressBar->setValue(recvSize / 1024);
+                if(recvSize == fileSize)
+                {
+                    QMessageBox::information(this, "完成", "文件接收完成");
+                    file.close();
+                }
+            }
+        });
+    });
+
+    ui->pushButton->setEnabled(false);
+}
+```
