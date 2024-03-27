@@ -1,4 +1,4 @@
-# 1、ROS 应用商店 APT 源
+#  1、ROS 应用商店 APT 源
 
 1、ROS应用商店 APT 源：网址：index.ros.org；
 
@@ -1096,5 +1096,588 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+```
+
+
+
+# 20、SLAM
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240322210825112.png" alt="image-20240322210825112" style="zoom: 33%;" />
+
+前期工作中：实现了激光雷达数据的获取和地图信息在 rviz 中的显示
+
+目前：只需要实现 SLAM 节点构建地图信息
+
+`index.ros.org` 搜索 hector_mapping
+
+主要分为：
+
+### 1、订阅话题：
+
+1. sensor_msgs/LaserScan ：获取激光雷达的数据
+2. std_msgs/String：主要用来接收 reset 这类重新建图的话题。
+
+### 2、发布话题：
+
+1. nav_msgs/MapMetaData
+
+	地图描述信息
+
+	```
+	# This hold basic information about the characterists of the OccupancyGrid
+	
+	# The time at which the map was loaded
+	地图加载时间
+	time map_load_time
+	
+	# The map resolution [m/cell]
+	地图的分辨率
+	float32 resolution
+	
+	# Map width [cells]
+	地图的宽
+	uint32 width
+	
+	# Map height [cells]
+	地图的高
+	uint32 height
+	
+	# The origin of the map [m, m, rad].  This is the real-world pose of the
+	# cell (0,0) in the map.
+	地图的原点坐标
+	geometry_msgs/Pose origin
+	```
+
+	
+
+2. nav_msgs/OccupancyGrid
+
+3. geometry_msgs/PoseStamped
+
+	原始机器人定位信息
+
+4. geometry_msgs/PoseWithCovarianceStamped
+
+	校正后的机器人定位信息
+
+
+
+### 3、Ubuntu 中运行
+
+```
+roslaunch wpr_simulation wpb_stage_slam.launchAborted
+```
+
+```
+rosrun hector_mapping hector_mapping
+```
+
+```
+rosrun rviz rviz
+```
+
+```
+rosrun rqt_robot_steering rqt_robot_steering
+```
+
+### 4、使用 launch 文件运行
+
+```xml
+<launch>
+    <include file="$(find wpr_simulation)/launch/wpb_stage_slam.launch"/>
+
+    <node name="hector_mapping" pkg="hector_mapping" type="hector_mapping" output="screen"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find slam_pkg)/rviz/slam.rviz"/>
+
+    <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering" output="screen"/>
+</launch>
+```
+
+==如果在实体机器人上运行，将第一句替换成 启动实体机器人激光雷达和底盘控制的 launch 文件即可。==
+
+
+
+### 5、建图的参数设置
+
+index.ros.org 搜索 `hector_mapping` ，进入 Wiki 界面，3.1.4 Parameters：
+
+5.1	`~map_update_distance_thresh` (`double`, default: 0.4)
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325111908416.png" alt="image-20240325111908416" style="zoom:50%;" />
+
+5.2	``~map_update_angle_thresh` (`double`, default: 0.9)`
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325112033178.png" alt="image-20240325112033178" style="zoom: 50%;" />
+
+5.3	``~map_pub_period` (`double`, default: 2.0)`
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325112142452.png" alt="image-20240325112142452" style="zoom: 67%;" />
+
+
+
+5.4	参数修改：
+
+```xml
+<launch>
+    <include file="$(find wpr_simulation)/launch/wpb_stage_slam.launch"/>
+
+    <node name="hector_mapping" pkg="hector_mapping" type="hector_mapping" output="screen">
+        <param name="map_update_distance_thresh" value="0.1"/>
+        <param name="map_update_angle_thresh" value="0.1"/>
+        <param name="map_pub_period" value="0.1"/>
+    </node>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find slam_pkg)/rviz/slam.rviz"/>
+
+    <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering" output="screen"/>
+</launch>
+```
+
+
+
+5.5	参数设置不同的机器人对比
+
+```xml
+<launch>
+
+  <!-- 第一个 Hector_Mapping 建图节点 -->
+  <group ns="slam_1">
+    <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping_1">
+
+      <param name="map_update_distance_thresh" value="0.4"/>
+      <param name="map_update_angle_thresh" value="0.9" />
+      <param name="map_pub_period" value="0.2" />
+      
+      <param name="map_frame" value="slam_1/map" />
+      <param name="base_frame" value="slam_1/base_footprint" />
+      <param name="odom_frame" value="slam_1/odom" />
+    </node>
+  </group>
+
+  <!-- 第二个 Hector_Mapping 建图节点 -->
+  <group ns="slam_2">
+    <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping_2">
+
+      <param name="map_update_distance_thresh" value="0.1"/>
+      <param name="map_update_angle_thresh" value="0.1" />
+      <param name="map_pub_period" value="0.2" />
+
+      <param name="map_frame" value="slam_2/map" />
+      <param name="base_frame" value="slam_2/base_footprint" />
+      <param name="odom_frame" value="slam_2/odom" />
+    </node>
+  </group>
+
+  <!-- **************************** 分割线 **************************** -->
+
+  <!-- 载入 SLAM 的仿真场景 -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <arg name="world_name" value="$(find wpr_simulation)/worlds/slam_simple.world"/>
+  <arg name="paused" value="false"/>
+  <arg name="use_sim_time" value="true"/>
+  <arg name="gui" value="true"/>
+  <arg name="recording" value="false"/>
+  <arg name="debug" value="false"/>
+  </include>
+
+  <!-- 载入 1号机器人 -->
+  <include file="$(find wpr_simulation)/launch/wpb_slam_template.launch">
+      <arg name="robot_namespace" value="slam_1" /> 
+      <arg name="local_x" value="0" /> 
+      <arg name="local_y" value="-0.3" /> 
+      <arg name="local_yaw" value="0" /> 
+  </include>
+
+  <!-- 载入 2号机器人 -->
+  <include file="$(find wpr_simulation)/launch/wpb_slam_template.launch">
+      <arg name="robot_namespace" value="slam_2" /> 
+      <arg name="local_x" value="0" /> 
+      <arg name="local_y" value="0.3" /> 
+      <arg name="local_yaw" value="0" /> 
+  </include>
+
+  <!-- 运动控制 -->
+  <node pkg="rqt_robot_steering" type="rqt_robot_steering" name="rqt_robot_steering"/>
+
+  <!-- 速度话题分流 -->
+  <node pkg = "topic_tools" type = "relay" name = "relay_1" args="/cmd_vel /slam_1/cmd_vel" />
+  <node pkg = "topic_tools" type = "relay" name = "relay_2" args="/cmd_vel /slam_2/cmd_vel" />
+
+</launch>
+```
+
+
+
+### 6、TF系统
+
+SLAM全称：同时建图和定位
+
+上节讲述了机器人的建图，接下来便是定位：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325120619384.png" alt="image-20240325120619384" style="zoom: 33%;" />
+
+机器人底盘投影到地面的底部中心：base_footprint（约定俗成）
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325120827254.png" alt="image-20240325120827254" style="zoom: 33%;" />
+
+运行相关 launch 文件，添加 TF 坐标变换，如图所示：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325121000386.png" alt="image-20240325121000386" style="zoom:50%;" />
+
+想要知道两者之间坐标系变换的具体数值：
+
+```
+rostopic list
+```
+
+找到 /tf 话题。
+
+```
+rostopic type /tf
+```
+
+得到具体数据类型为：
+
+```
+tf2_msgs/TFMessage
+```
+
+ROS Index 查询这个数据类型：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130208135.png" alt="image-20240325130208135" style="zoom: 80%;" />
+
+具体类型展开：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130247639.png" alt="image-20240325130247639" style="zoom: 80%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130431780.png" alt="image-20240325130431780" style="zoom: 33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130514689.png" alt="image-20240325130514689" style="zoom: 33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130549569.png" alt="image-20240325130549569" style="zoom: 33%;" />
+
+终端中：
+
+```
+rostopic echo /tf
+```
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325130633986.png" alt="image-20240325130633986" style="zoom: 33%;" />
+
+但输出太乱，想要多个具体的显示：
+
+```
+rosrun rqt_tf_tree rqt_tf_tree
+```
+
+
+
+### 7、里程计
+
+在 Hector_mapping 建图算法中，碰到下图这种大直廊设计，导致雷达只能获取这两排平行的点云，导致障碍物和点云配准的结果认为机器人没有向前移动，只是因为雷达的噪声在一个小范围内抖动。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325150041747.png" alt="image-20240325150041747" style="zoom:33%;" />
+
+缺少参照物的特征变化，无法估计自己的位移。
+
+因此里程计的作用就体现出来了：
+
+通过计算：车轮转动的圈数* 车轮的周长 = 行驶距离，并将其发送到 /tf 话题中
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325142842881.png" alt="image-20240325142842881" style="zoom: 33%;" />
+
+激光雷达 SLAM 输出的是 map 到 base_footprint 的 TF；
+
+里程计输出的是 odom （odometry的缩写）到 base_footprint 的 TF。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325143206386.png" alt="image-20240325143206386" style="zoom: 33%;" />
+
+通过里程计的位移信息推算机器人的当前位置，而且不会受参照物特征的误导；但实际运行过程中会出现车轮打滑的现象，这时通过数值计算得出的结果会存在偏差；
+
+激光雷达里面通过雷达点云和参照物配准实现定位功能。
+
+修正里程计误差方法：障碍物点云配准的定位算法。
+
+比如下图所示：里程计的tf坐标变换是从 odom 到 base_footprint，但实际上却是还需要加上绿色这段位移才是最终的机器人坐标变换。但由于 base_footprint 已经被里程计占用。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325144030477.png" alt="image-20240325144030477" style="zoom: 33%;" />
+
+slam节点最终要输出的是：map 到 base_footprint 的坐标变换
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325144412869.png" alt="image-20240325144412869" style="zoom: 33%;" />
+
+既然 TF 末端的 base_footprint 已经被里程计占用了，slam便把绿色这段 TF 挪到根端的 odom 之前，也就是下图右半部分的 map 到 odom 这段。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325144526240.png" alt="image-20240325144526240" style="zoom: 25%;" />
+
+这样就实现了map 到 base_footprint 的 TF 变换：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325144804679.png" alt="image-20240325144804679" style="zoom:33%;" />
+
+
+
+类似于这样：先通过 里程计推算机器人的位移（odom 到 base_footprint），然后通过雷达点云贴合障碍物轮廓修正里程计误差的方法。便是 Gmapping 的核心算法。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325145050249.png" alt="image-20240325145050249" style="zoom: 33%;" />
+
+
+
+对比之前的 hector_mapping 算法：
+
+Gmapping算法：主要位移由里程计推算，激光雷达点云配准算法只是为了修正里程计出现的误差。
+
+而 Hector_mapping：只使用雷达点云和障碍物配准的方法来进行定位，只不过为了 rviz 能显示地图和机器人模型，勉为其难的输出一段 map 到 odom 的 TF 去抵消 不断增长的里程计 TF，好让机器人的 scanmatcher_frame 和 base_footprint 的位置保持一致。（详细见机器人工匠阿杰：什么是里程计）
+
+Hector_mapping 算法：
+
+可以观察到一个反常现象，odom的这段 TF 是在不断变长的，但是 Hector_mapping 会输出一段反向增长的 TF 来抵消里程计的变化，目的是使 base_footprint 的位置始终和 scanmatcher_frame 保持一致。
+
+而 base_footprint 是机器人底盘投影的中心，就能让机器人的模型显示在 scanmatcher_frame 的位置。
+
+Hector_mapping 对于里程计信息，只考虑了机器人在 Rviz 中的显示，而没有考虑定位的问题。
+
+![image-20240325150406484](b站机器人工匠阿杰笔记.assets/image-20240325150406484.png)
+
+
+
+### 8、Gmapping
+
+#### 1、简介
+
+index.ros.org 搜索 gmapping，选择 website。
+
+#### 2、订阅的话题：
+
+1. tf 坐标变换信息
+2. 激光雷达的数据话题
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326134618387.png" alt="image-20240326134618387" style="zoom: 67%;" />
+
+其中， tf 坐标变换需要的信息有：
+
+1. 雷达坐标系到底盘坐标系 base_link 的 TF
+
+	这里的雷达坐标系没有具体名称，与雷达数据包的 header 中的 frame_id 保持一致
+
+2. 里程计输出的 TF
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326134954239.png" alt="image-20240326134954239" style="zoom:50%;" />
+
+需求列表如下：
+
+![image-20240326151643138](b站机器人工匠阿杰笔记.assets/image-20240326151643138.png)
+
+#### 3、发布的话题
+
+1、`map_metadata` ([nav_msgs/MapMetaData](http://docs.ros.org/en/api/nav_msgs/html/msg/MapMetaData.html))：地图信息
+
+地图加载时间、地图分辨率、地图的宽和高、地图的原点坐标
+
+2、`map` ([nav_msgs/OccupancyGrid](http://docs.ros.org/en/api/nav_msgs/html/msg/OccupancyGrid.html))：栅格地图数据
+
+3、`~entropy` ([std_msgs/Float64](http://docs.ros.org/en/api/std_msgs/html/msg/Float64.html))：机器人定位的置信度（值越大，机器人定位的错误越大）
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326151749097.png" alt="image-20240326151749097" style="zoom: 50%;" />
+
+#### 4、Gmapping提供了 map 到 odom 的 TF信息
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326152311640.png" alt="image-20240326152311640" style="zoom: 67%;" />
+
+#### 5、实验
+
+1. ```
+	roslaunch wpr_simulation wpb_stage_robocup.launch
+	```
+
+2. ```
+	rostopic echo /scan --noarr
+	```
+
+	<img src="b站机器人工匠阿杰笔记.assets/image-20240326153304925.png" alt="image-20240326153304925" style="zoom:50%;" />
+
+	
+
+3. 存在雷达信息，并且得到雷达的坐标系为 laser：
+
+	![image-20240326153331723](b站机器人工匠阿杰笔记.assets/image-20240326153331723.png)
+
+	
+
+4. ```
+	rosrun rqt_tf_tree rqt_tf_tree 
+	```
+
+	可以看出两个坐标变换均存在：
+
+	<img src="b站机器人工匠阿杰笔记.assets/image-20240326153624734.png" alt="image-20240326153624734" style="zoom: 50%;" />
+
+	
+
+5. 终端运行
+
+	```
+	roslaunch wpr_simulation wpb_stage_robocup.launch
+	rosrun gmapping slam_gmapping
+	rosrun rviz rviz
+	rosrun wpr_simulation keyboard_vel_ctrl
+	```
+
+#### 6、roslaunch 一键启动
+
+```
+<launch>
+    <include file="$(find wpr_simulation)/launch/wpb_stage_robocup.launch"/>
+    
+    <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping" output="screen"/>
+    
+    <node name="rviz" pkg="rviz" type="rviz" output="screen"/>
+
+    <node name="keyboard_vel_ctrl" pkg="wpr_simulation" type="keyboard_vel_ctrl" output="screen"/>
+</launch>
+```
+
+
+
+如果想要实现实体机器人上的运动，将下面红色方框内的 launch 文件替换成实体机器人驱动的 launch 文件：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326205320184.png" alt="image-20240326205320184" style="zoom: 33%;" />
+
+
+
+#### 7、Gmapping 建图的参数设置
+
+1、每个波浪线标示出来的表示可以设置的参数名。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212015321.png" alt="image-20240326212015321" style="zoom:33%;" />
+
+2、参数的类型：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212129265.png" alt="image-20240326212129265" style="zoom:33%;" />
+
+3、参数的默认值：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212149275.png" alt="image-20240326212149275" style="zoom:33%;" />
+
+4、参数的说明：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212215156.png" alt="image-20240326212215156" style="zoom:33%;" />
+
+5、部分参数具体介绍：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212317276.png" alt="image-20240326212317276" style="zoom:33%;" />
+
+6、如果机器人的 TF 采用了和下图不一样的名称，且不容易修改。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212445259.png" alt="image-20240326212445259" style="zoom:33%;" />
+
+可以对下图的参数进行修改
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212513018.png" alt="image-20240326212513018" style="zoom:33%;" />
+
+7、性能相关参数又可以分为四种类型：
+
+7.1	地图尺寸
+
+地图尺寸越大，越占用内存；
+
+地图分辨率越小，占用的内存越大。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326212802268.png" alt="image-20240326212802268" style="zoom:33%;" />
+
+7.2	激光雷达
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213023466.png" alt="image-20240326213023466" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213124577.png" alt="image-20240326213124577" style="zoom:33%;" />
+
+
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213157713.png" alt="image-20240326213157713" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213225336.png" alt="image-20240326213225336" style="zoom:33%;" />
+
+
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213250721.png" alt="image-20240326213250721" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213328017.png" alt="image-20240326213328017" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213348276.png" alt="image-20240326213348276" style="zoom:33%;" />
+
+
+
+Gmapping 接收到一定帧数的数据后，只处理其中的最后一帧
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213411924.png" alt="image-20240326213411924" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213546474.png" alt="image-20240326213546474" style="zoom:33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213608708.png" alt="image-20240326213608708" style="zoom:33%;" />
+
+
+
+7.3	地图更新
+
+第一个参数的优先级最高：例如在第一个参数的时间间隔内，移动了两次或者三次的移动距离阈值，地图信息也只会更新一次。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326213818437.png" alt="image-20240326213818437" style="zoom:33%;" />
+
+7.4	定位相关（算法）
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326214048117.png" alt="image-20240326214048117" style="zoom:33%;" />
+
+粒子数越大，对算力的消耗也就越大；
+
+重采样阈值越大，对算力的消耗也越大。
+
+
+
+8、 参数修改
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240326214728027.png" alt="image-20240326214728027" style="zoom: 33%;" />
+
+
+
+#### 9、地图的保存和加载
+
+1、ROS 有专门的 map_server 功能包来实现这两个功能：
+
+```c++
+rosrun map_server map_saver [--occ <threshold_occupied>] [--free <threshold_free>] [-f <mapname>] map:=/your/costmap/topic
+```
+
+`map_saver`检索地图数据并将其写入 **map.pgm** 和 **map.yaml**（不带任何参数的情况下，默认输出这两个文件）。使用 **-f** 选项为输出文件提供不同的基本名称。
+
+```
+rosrun map_server map_saver -f map
+```
+
+-f 后加的是自定义文件名称。
+
+
+
+2、map.yaml 文件说明
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240327120848662.png" alt="image-20240327120848662" style="zoom:50%;" />
+
+对照：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240327125712974.png" alt="image-20240327125712974" style="zoom:50%;" />
+
+第一行是地图图片文件；
+
+第二行是地图分片率，单位是：米/像素；
+
+第三行是左下角像素的坐标，相对于 TF 变换中的 map 坐标；
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240327130013965.png" alt="image-20240327130013965" style="zoom: 50%;" />
+
+
+
+3、加载已有地图
+
+```
+rosrun map_server map_server mymap.yaml
 ```
 
