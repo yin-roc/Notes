@@ -1048,11 +1048,11 @@ origin：地图中的(0,0)与真实世界的坐标原点的偏差量，包括横
 
 构建如下地图
 
-![image-20240318153919163](b站机器人工匠阿杰笔记.assets/image-20240318153919163.png)
+<img src="b站机器人工匠阿杰笔记.assets/image-20240318153919163.png" alt="image-20240318153919163" style="zoom:50%;" />
 
 
 
-![image-20240318154009702](b站机器人工匠阿杰笔记.assets/image-20240318154009702.png)
+<img src="b站机器人工匠阿杰笔记.assets/image-20240318154009702.png" alt="image-20240318154009702" style="zoom: 33%;" />
 
 ```c++
 #include <ros/ros.h>
@@ -1112,12 +1112,12 @@ int main(int argc, char *argv[])
 
 主要分为：
 
-### 1、订阅话题：
+## 1、订阅话题：
 
 1. sensor_msgs/LaserScan ：获取激光雷达的数据
 2. std_msgs/String：主要用来接收 reset 这类重新建图的话题。
 
-### 2、发布话题：
+## 2、发布话题：
 
 1. nav_msgs/MapMetaData
 
@@ -1162,7 +1162,7 @@ int main(int argc, char *argv[])
 
 
 
-### 3、Ubuntu 中运行
+## 3、Ubuntu 中运行
 
 ```
 roslaunch wpr_simulation wpb_stage_slam.launchAborted
@@ -1180,7 +1180,7 @@ rosrun rviz rviz
 rosrun rqt_robot_steering rqt_robot_steering
 ```
 
-### 4、使用 launch 文件运行
+## 4、使用 launch 文件运行
 
 ```xml
 <launch>
@@ -1198,21 +1198,21 @@ rosrun rqt_robot_steering rqt_robot_steering
 
 
 
-### 5、建图的参数设置
+## 5、建图的参数设置
 
 index.ros.org 搜索 `hector_mapping` ，进入 Wiki 界面，3.1.4 Parameters：
 
 5.1	`~map_update_distance_thresh` (`double`, default: 0.4)
 
-<img src="b站机器人工匠阿杰笔记.assets/image-20240325111908416.png" alt="image-20240325111908416" style="zoom:50%;" />
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325111908416.png" alt="image-20240325111908416" style="zoom: 33%;" />
 
 5.2	``~map_update_angle_thresh` (`double`, default: 0.9)`
 
-<img src="b站机器人工匠阿杰笔记.assets/image-20240325112033178.png" alt="image-20240325112033178" style="zoom: 50%;" />
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325112033178.png" alt="image-20240325112033178" style="zoom: 33%;" />
 
 5.3	``~map_pub_period` (`double`, default: 2.0)`
 
-<img src="b站机器人工匠阿杰笔记.assets/image-20240325112142452.png" alt="image-20240325112142452" style="zoom: 67%;" />
+<img src="b站机器人工匠阿杰笔记.assets/image-20240325112142452.png" alt="image-20240325112142452" style="zoom: 33%;" />
 
 
 
@@ -1309,7 +1309,7 @@ index.ros.org 搜索 `hector_mapping` ，进入 Wiki 界面，3.1.4 Parameters�
 
 
 
-### 6、TF系统
+## 6、TF系统
 
 SLAM全称：同时建图和定位
 
@@ -1373,7 +1373,7 @@ rosrun rqt_tf_tree rqt_tf_tree
 
 
 
-### 7、里程计
+## 7、里程计
 
 在 Hector_mapping 建图算法中，碰到下图这种大直廊设计，导致雷达只能获取这两排平行的点云，导致障碍物和点云配准的结果认为机器人没有向前移动，只是因为雷达的噪声在一个小范围内抖动。
 
@@ -1441,7 +1441,7 @@ Hector_mapping 对于里程计信息，只考虑了机器人在 Rviz 中的显�
 
 
 
-### 8、Gmapping
+## 8、Gmapping
 
 #### 1、简介
 
@@ -1523,7 +1523,7 @@ index.ros.org 搜索 gmapping，选择 website。
 	rosrun wpr_simulation keyboard_vel_ctrl
 	```
 
-#### 6、roslaunch 一键启动
+## 6、roslaunch 一键启动
 
 ```
 <launch>
@@ -1545,7 +1545,7 @@ index.ros.org 搜索 gmapping，选择 website。
 
 
 
-#### 7、Gmapping 建图的参数设置
+## 7、Gmapping 建图的参数设置
 
 1、每个波浪线标示出来的表示可以设置的参数名。
 
@@ -1639,7 +1639,7 @@ Gmapping 接收到一定帧数的数据后，只处理其中的最后一帧
 
 
 
-#### 9、地图的保存和加载
+## 9、地图的保存和加载
 
 1、ROS 有专门的 map_server 功能包来实现这两个功能：
 
@@ -1681,3 +1681,512 @@ rosrun map_server map_saver -f map
 rosrun map_server map_server mymap.yaml
 ```
 
+
+
+
+
+# 21、Navigation
+
+## 1、简介
+
+![image-20240403111252820](b站机器人工匠阿杰笔记.assets/image-20240403111252820.png)
+
+## 2、move_base 节点
+
+仿真环境中，sensor sources、sensor transforms 和 odometry source都会自动获得，因此只需要：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403112903279.png" alt="image-20240403112903279" style="zoom:50%;" />
+
+
+
+环境配置和节点运行：
+
+1、
+
+```
+git clone https://github.com/6-robot/wpb_home.git
+```
+
+2、
+
+```
+cd wpb_home/wpb_home_bringup/scripts
+```
+
+3、
+
+```
+./install_for_noetic.sh 
+```
+
+4、
+
+```
+catkin_make
+```
+
+5、如果前面建过图，忽略下面两步： 
+
+```
+roslaunch wpr_simulation wpb_gmapping.launch
+```
+
+```
+rosrun wpr_simulation keyboard_vel_ctrl
+```
+
+```
+rosrun map_server map_saver -f map
+```
+
+6、建好的图，放入 wpr_simulation 功能包的 map 文件夹内：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403131208334.png" alt="image-20240403131208334" style="zoom:50%;" />
+
+7、编写 nav_pkg 的 nav.launch
+
+```c++
+<launch>
+    <!-- move_base 导航节点-->
+    <node name="move_base" pkg="move_base" type="move_base" output="screen">
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find wpb_home_tutorials)/nav_lidar/local_costmap_params.yaml" command="load" />
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" /> 
+        <param name="base_local_planner" value="wpbh_local_planner/WpbhLocalPlanner" />
+    </node>
+    
+    <!-- map_server 地图服务节点 -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find wpr_simulation)/maps/map.yaml"/>
+    
+    <!-- amcl 定位节点 -->
+    <node name="amcl" pkg="amcl" type="amcl"/>
+    
+</launch>
+```
+
+8、运行文件实现导航
+
+1. 启动 gazebo 仿真环境
+
+	```
+	roslaunch wpr_simulation wpb_stage_robocup.launch
+	```
+
+2. 启动导航节点
+
+	```
+	roslaunch nav_pkg nav.launch
+	```
+
+3. 启动 rviz 设置目标点
+
+	```
+	rosrun rviz rviz
+	```
+
+	设置Robotmodel、map 和 path
+
+
+
+## 3、全局规划器
+
+### 3.1	内部算法
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403151417382.png" alt="image-20240403151417382" style="zoom:33%;" />
+
+### 3.2	ROS 内置全局规划器
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403151459485.png" alt="image-20240403151459485" style="zoom: 33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403151545053.png" alt="image-20240403151545053" style="zoom:33%;" />
+
+Navfn 和 Global_planner 一模一样，都包含了 A* 和 Dijkstra 算法
+
+Navfn 里面默认使用 Dijkstra 算法，而不是内部有 bug 的  A* 算法；
+
+Global_planner 是修改后的 Navfn ，修补了其原有 bug。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403151647317.png" alt="image-20240403151647317" style="zoom: 33%;" />
+
+但是 Global_planner 默认使用的也是 Dijkstra 算法，想要修改，需要在 move_base 相关节点处修改如下：
+
+但是对于现在的电脑算力来讲，Dijkstra 算法并不会消耗太多时间，所以一般不建议设置。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403152415786.png" alt="image-20240403152415786" style="zoom:33%;" />
+
+
+
+### 3.3	Carrot_planner
+
+遇到障碍物就停止。
+
+但是由于的代码简单，经常被作为自定义规划器模板修改。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403153123673.png" alt="image-20240403153123673" style="zoom:33%;" />
+
+
+
+### 3.4	自定义全局规划器
+
+提供了 Plugin 插件接口，按照特定格式，将自己的路径规划算法加载到 move_base 节点中使用。
+
+
+
+
+
+## 4、AMCL 定位算法
+
+全称：adaptive Monte Carlo Localization（自适应蒙特卡洛定位算法），使用粒子滤波在已知地图进行定位的算法，它同时使用了里程计和激光雷达数据
+
+RosIndex 搜索 AMCL 查看参数列表；
+
+参照 wpb_home_tutorials 的 nav_lidar 查看 amcl_diff.launch 和 amcl_omni.launch，参考参数设置，直接复制过来用即可
+
+
+
+amcl 输出 tf 变换为：map 到 odom；
+
+里程计输出 tf 变换为：odom 到 base_footprint；
+
+amcl 切换节点和分身是通过 map 到 odom 这段 tf 产生跳跃突变来实现的，所以在导航过程中经常看到机器人一蹦一蹦的。
+
+而里程计输出的 tf 变换是连续变化的。
+
+
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403155211801.png" alt="image-20240403155211801" style="zoom:33%;" />
+
+## 5、代价地图 Costmap
+
+全局代价地图和局部代价地图
+
+终端输入：
+
+1、
+
+```
+roslaunch wpr_simulation wpb_stage_robocup.launch
+```
+
+2、
+
+```
+roslaunch nav_pkg nav.launch 
+```
+
+3、
+
+```
+rosrun rviz rviz
+```
+
+进行 rviz 相关配置：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403210617322.png" alt="image-20240403210617322" style="zoom:50%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240403210640977.png" alt="image-20240403210640977" style="zoom:50%;" />
+
+
+
+
+
+## 6、代价地图的参数设置
+
+### 1、主要文件
+
+参数设置主要是以下几个文件：
+
+```
+<rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="global_costmap" />
+<rosparam file="$(find wpb_home_tutorials)/nav_lidar/costmap_common_params.yaml" command="load" ns="local_costmap" />
+<rosparam file="$(find wpb_home_tutorials)/nav_lidar/global_costmap_params.yaml" command="load" />
+<rosparam file="$(find wpb_home_tutorials)/nav_lidar/local_costmap_params.yaml" command="load" />
+```
+
+具体文件内容如下图所示：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404152231838.png" alt="image-20240404152231838" style="zoom: 33%;" />
+
+第一个文件 costmap_common_params.yaml 并没有区分全局和局部代价地图，但是在其后有 ns 来限定其命名空间，因此，其命名空间的作用相当于如下作用：
+
+在开头添加 global_costmap 或者 local_costmap。
+
+ 统一描写的作用：costmap_common_params.yaml 参数文件描述的是地图的形状，用单一文件描述可以保证后续参数的修改，可以同时影响两个代价地图的形状。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404152328009.png" alt="image-20240404152328009" style="zoom: 33%;" />
+
+
+
+### 2、具体参数含义
+
+#### 2.1	costmap_common_params.yaml
+
+```yaml
+observation_sources: base_lidar
+# 数据参数
+base_lidar: {
+    # 数据消息包的类型
+    data_type: LaserScan,
+    # 接收消息包的话题名称
+    topic: /scan, 
+    # 是否将扫描到的障碍物添加到代价地图
+    marking: true, 
+    # 是否将扫描范围内的障碍物残影清除
+    clearing: true
+    }
+```
+
+机器人禁止进入范围：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404153318352.png" alt="image-20240404153318352" style="zoom: 33%;" />
+
+尽量避免进入范围：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404153412279.png" alt="image-20240404153412279" style="zoom:50%;" />
+
+
+
+动态障碍物观测源加入相机识别三维空间障碍物源：
+
+```yaml
+observation_sources: base_lidar head_kinect2
+# 数据参数
+base_lidar: {
+    # 数据消息包的类型
+    data_type: LaserScan,
+    # 接收消息包的话题名称
+    topic: /scan, 
+    # 是否将扫描到的障碍物添加到代价地图
+    marking: true, 
+    # 是否将扫描范围内的障碍物残影清除
+    clearing: true
+    }
+head_kinect2: {
+    # 数据消息包的类型
+    data_type: PointCloud2,
+    # 接收消息包的话题名称
+    topic: /kinect2/sd/points, 
+    # 是否将扫描到的障碍物添加到代价地图
+    marking: true, 
+    # 是否将扫描范围内的障碍物残影清除
+    clearing: true,
+    max_obstacle_height: 1.5,
+    min_obstacle_height: 0.2,
+    }
+```
+
+对比发现，紫色区域便是头部相机探测到的障碍物特征：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404155343859.png" alt="image-20240404155343859" style="zoom: 33%;" />
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404155358116.png" alt="image-20240404155358116" style="zoom:33%;" />
+
+
+
+#### 2.2	global_costmap_params.yaml
+
+```yaml
+global_costmap:
+  # 地图坐标系名称
+  global_frame: map
+  # 底盘坐标系名称 
+  robot_base_frame: base_footprint
+  # 是否将 map_server 发过来的地图作为初始地图
+  # 设置为 false 则是一张空地图，需要构建一套动态建图机制来为它提供导航依据
+  static_map: true
+  # 地图更新频率，将传感器检测到的障碍物添加到代价地图中
+  update_frequency: 1.0
+  # 地图发布频率，也就是 发送给 rviz 进行显示的频率 
+  publish_frequency: 1.0
+  # tf 变换容忍延迟的最大值，如果导航中出现 某段 tf 显示 timeout，将这段值调大一点
+  transform_tolerance: 1.0
+```
+
+
+
+#### 2.3	local_costmap_params
+
+```yaml
+local_costmap:
+  # 地图坐标系：odom
+  # amcl中通过 map 到 odom 的跳变切换机器人本体和分身的位置，局部地图若以 map 为基准坐标系，跳变时会导致障碍物也跟着跳变，不利于机器人
+  # 丝滑行驶，全局中以 map 为基准坐标系，只是导航路线有所偏差，是因为有避障作为保底。
+  global_frame: odom
+  robot_base_frame: base_footprint
+  static_map: false
+  # 局部代价地图的范围是否和机器人一起运动
+  rolling_window: true
+  # 局部代价地图的范围和尺寸，单位：米
+  width: 3.0
+  height: 3.0
+  update_frequency: 10.0
+  publish_frequency: 10.0
+  transform_tolerance: 1.0
+```
+
+
+
+#### 2.5 更多参数设置
+
+ROS Index 搜索 costmap_2d 进入 wiki 查看
+
+
+
+
+
+## 7、恢复行为	Recovery Behaviors
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162233249.png" alt="image-20240404162233249" style="zoom:50%;" />
+
+保守重置：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162529589.png" alt="image-20240404162529589" style="zoom:33%;" />
+
+旋转清除：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162612654.png" alt="image-20240404162612654" style="zoom:33%;" />
+
+激进重置：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162712296.png" alt="image-20240404162712296" style="zoom:33%;" />
+
+再次旋转清除：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162743006.png" alt="image-20240404162743006" style="zoom:33%;" />
+
+放弃任务：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404162835667.png" alt="image-20240404162835667" style="zoom:33%;" />
+
+
+
+## 8、恢复行为的参数设置
+
+### 1、三个主要参数类型
+
+第三个一般不用。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404171313574.png" alt="image-20240404171313574" style="zoom:33%;" />
+
+恢复行为主要为全局路径规划服务，主要参数为 global_costmap_params.yaml 的 recovery_behaviors 内容
+
+```yaml
+global_costmap:
+  global_frame: map
+  robot_base_frame: base_footprint
+  static_map: true
+  update_frequency: 1.0
+  publish_frequency: 1.0
+  transform_tolerance: 1.0
+
+recovery_behaviors:
+  # name 是每个行为的名字，随便取；
+  # type 需要从 clear_costmap_recovery/ClearCostmapRecovery、rotate_recovery/RotateRecovery 和 move_slow_and_clear/MoveSlowAndClear 中选
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'rotate_recovery'
+    type: 'rotate_recovery/RotateRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+
+# 名称与上面恢复行为对应，给对应行为设置具体参数
+conservative_reset:
+  # 清除范围
+  reset_distance: 2.0
+  # 清除哪一层地图，这里是障碍层
+  layer_names: ["obstacle_layer"]
+
+aggressive_reset:
+  reset_distance: 0.0
+  layer_names: ["obstacle_layer"]
+```
+
+
+
+### 2、地图分层
+
+地图分层：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404172040929.png" alt="image-20240404172040929" style="zoom: 25%;" />
+
+
+
+障碍物地图：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404172127512.png" alt="image-20240404172127512" style="zoom: 25%;" />
+
+膨胀地图：
+
+将静态层与障碍层叠加，对所有障碍栅格的边缘设置一圈掉血区域
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404172207967.png" alt="image-20240404172207967" style="zoom:25%;" />
+
+最终代价地图：三层地图合并
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404172427312.png" alt="image-20240404172427312" style="zoom:25%;" />
+
+
+
+恢复行为中的重置行为：清除激光雷达过去探测的障碍物残影，即障碍层地图信息刷新
+
+以机器人为中心的重置范围，边长为 reset_distance，单位为米。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404172742693.png" alt="image-20240404172742693" style="zoom: 33%;" />
+
+默认情况下，清除正方形以外的障碍层信息：如图所示，激进重置行为的 reset_distance 却有 1.84 米，不够激进，可以改为 0.0
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404173126800.png" alt="image-20240404173126800" style="zoom:33%;" />
+
+
+
+### 3、其余参数
+
+旋转清除和重置清除更多参数：ROS Index 搜索 rotate_recovery 和 clear_costmap_recovery
+
+其中：clear_costmap_recovery 的 默认参数是 obstacles
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404174423493.png" alt="image-20240404174423493" style="zoom: 33%;" />
+
+
+
+但在 costmap_2d 中：默认的障碍物层参数是 obstacle_layer
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404174547276.png" alt="image-20240404174547276" style="zoom:50%;" />
+
+
+
+为了保证障碍物层的重置清除成功，
+
+法1：
+
+修改代价地图中的障碍物层名称：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404174829280.png" alt="image-20240404174829280" style="zoom: 33%;" />
+
+法2：
+
+将重置行为的 layer_names 的名称修改：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404174909501.png" alt="image-20240404174909501" style="zoom:33%;" />
+
+
+
+## 9、局部规划器
+
+ROS 自带的 Trajectory Planner 和 DWA Planner；
+
+第三方的 Eband Planner 和 TEB Planner；
+
+课程使用到的 WpbhLocalplanner。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404175441325.png" alt="image-20240404175441325" style="zoom:33%;" />
+
+
+
+新局部规划器的修改加入：
+
+修改对应 launch 文件的 base_local_planner 参数即可：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240404175709761.png" alt="image-20240404175709761" style="zoom:33%;" />
