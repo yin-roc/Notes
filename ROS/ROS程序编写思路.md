@@ -136,7 +136,15 @@ int main(int argc, char *argv[])
 
 
 
-### 2、话题通信自定义msg
+### 2、话题通信自定义msg（同一功能包内）
+
+==tips：==
+
+在 vsocde 的c_cpp_properties.json 中的includePath 添加自定义 msg 文件路径：
+
+```
+/home/yin-roc/1-Github/Ubuntu20.04-VMware/workspace/ros_ws/ROS_demo_ws/devel/include/**
+```
 
 #### 1、发布者(msg)
 
@@ -149,7 +157,7 @@ int main(int argc, char *argv[])
     <exec_depend>message_runtime</exec_depend>
     ```
 
-3. **CMakeLists.txt**编辑 msg 相关配置：
+3. **CMakeLists.txt** 编辑 msg 相关配置：
 
     ```cmake
     #编译时依赖
@@ -184,6 +192,10 @@ int main(int argc, char *argv[])
     #  DEPENDS system_lib
     )
     ```
+
+    使用rosmsg show 查看 自定义 msg 消息是否创建好
+
+    
 
 4. 包含头文件
 
@@ -297,6 +309,89 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
+
+
+
+### 2、话题通信自定义msg（不在同一功能包内）
+
+#### 发布者：
+
+1、在所在功能包使用其他功能包定义的消息类型，要在CMakeLists 里面添加消息包的依赖，意在告诉编译器，先去编译所需要的依赖，再来编译当前功能包，否则会报错。
+
+2、CMakeLists：
+
+设置该软件包编译所需要的依赖项
+
+```
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  qq_msgs
+)
+```
+
+==Tips==：
+
+- add_dependencies 是 add_executable 下方的 add_dependencies ，避免混淆；
+
+- 2、 add_dependencies 必须==位于== add_executable 与 target_link_libraries==之间==！！！
+
+```
+add_dependencies(chao_node qq_msgs_generate_messages_cpp)
+```
+
+
+
+3、Package.xml：添加 qq_msgs 到 build_depend 和 exec_depend中
+
+```
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>qq_msgs</build_depend>
+
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>qq_msgs</exec_depend>
+```
+
+#### 订阅者
+
+1、CMakLists.txt
+
+```
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  test_msgs
+)
+
+add_executable(sub_node src/sub_node.cpp)
+
+add_dependencies(sub_node test_msgs_generate_messages_cpp)
+
+target_link_libraries(sub_node
+  ${catkin_LIBRARIES}
+)
+```
+
+2、Package.xml
+
+```
+<build_depend>test_msgs</build_depend>
+<exec_depend>test_msgs</exec_depend>
+```
+
+3、总结
+
+![image-20240318143551707](ROS程序编写思路.assets/image-20240318143551707.png)
 
 
 

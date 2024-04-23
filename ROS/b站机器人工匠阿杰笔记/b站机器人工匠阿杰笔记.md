@@ -2190,3 +2190,175 @@ ROS 自带的 Trajectory Planner 和 DWA Planner；
 修改对应 launch 文件的 base_local_planner 参数即可：
 
 <img src="b站机器人工匠阿杰笔记.assets/image-20240404175709761.png" alt="image-20240404175709761" style="zoom:33%;" />
+
+
+
+### DWA 规划器
+
+Dynamic Window Approach（DWA）：动态窗口法
+
+这里的窗口指：线路轨迹和运动速度可选择的空间
+
+DWA算法生成如下的一系列轨迹和速度的方案
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416141238240.png" alt="image-20240416141238240" style="zoom: 67%;" />
+
+并从中挑选出最合适的一条轨迹：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416141335099.png" alt="image-20240416141335099" style="zoom:67%;" />
+
+涉及内容：生成轨迹和挑选轨迹
+
+其中生成轨迹是以当前机器人的运动速度为基础，规划未来一段时间机器人的运动状态和移动线路
+
+DWA的轨迹生成：通过对机器人运动的矢量运动和旋转运动选取不同的值并组合，使机器人走出不一样的路线
+
+​		对速度分量的取值操作称为采样，速度的取值会综合考虑底盘加速度的限制、与障碍物保持有效的刹车距离以及尽快运动到轨迹终点这三个因素。
+
+这种轨迹挑选的标准有三个：第一个是运动轨迹和全局导航路线的贴合程度、第二个是轨迹末端和目标点的距离、第三个是轨迹路线和障碍物之间的距离，即：过程、目标和风险这三个因素
+
+
+
+轨迹末端和目标点的距离：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416142541846.png" alt="image-20240416142541846" style="zoom:67%;" />
+
+轨迹路线和障碍物之间的距离：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416142609843.png" alt="image-20240416142609843" style="zoom:67%;" />
+
+综合考虑:
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416142900978.png" alt="image-20240416142900978" style="zoom:67%;" />
+
+
+
+实际运行： 
+
+1、修改 nav_pkg 中的 nav.launch 的局部规划器选择为dwa_local_planner：
+
+```
+<param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+<rosparam command="load" file="$(find wpb_home_tutorials)/nav_lidar/dwa_local_planner_params.yaml"/>
+```
+
+2、终端运行仿真环境 gazebo 和 rviz 显示
+
+```
+
+```
+
+3、rviz中添加如下显示
+
+![image-20240416160311291](b站机器人工匠阿杰笔记.assets/image-20240416160311291.png)
+
+4、开始导航
+
+白色的即为DWA生成的备选轨迹；
+
+绿色的才是挑选出的执行路线。
+
+![image-20240416160455912](b站机器人工匠阿杰笔记.assets/image-20240416160455912.png)
+
+5、DWA的参数设置
+
+真实参数设置：
+
+​		根据机器人的真实参数设置
+
+![image-20240416160752218](b站机器人工匠阿杰笔记.assets/image-20240416160752218.png)
+
+
+
+目标容差参数：
+
+​		对机器人是否到达轨迹终点的判定条件：
+
+![image-20240416160903623](b站机器人工匠阿杰笔记.assets/image-20240416160903623.png)
+
+
+
+向前模拟参数：
+
+​		决定了生成的轨迹长度和数量。
+
+![image-20240416161000975](b站机器人工匠阿杰笔记.assets/image-20240416161000975.png)
+
+
+
+轨迹评分参数：
+
+​		影响最终选择的执行路线
+
+![image-20240416161103356](b站机器人工匠阿杰笔记.assets/image-20240416161103356.png)
+
+局部规划器坐标系一般设置为里程计坐标系。
+
+具体如下：
+
+```yaml
+DWAPlannerROS:
+  # 速度参数
+  max_vel_x: 0.3      # 最大x方向速度
+  min_vel_x: -0.05    # 最小x方向速度（设置负数将会允许倒车）
+  max_vel_y: 0.0      # 差分驱动机器人的最大y方向速度为 0.0
+  min_vel_y: 0.0      # 差分驱动机器人的最小y方向速度为 0.0
+  max_vel_trans: 0.3  # 最大平移速度
+  min_vel_trans: 0.01 # 最小平移速度（建议不要设置为 0.0 ）
+  trans_stopped_vel: 0.1  # 当平移速度小于这个值，就让机器人停止
+  acc_lim_trans: 2.5      # 最大平移加速度
+  acc_lim_x: 2.5          # x方向的最大加速度上限
+  acc_lim_y: 0.0          # y方向的加速度上限（差分驱动机器人应该设置为 0.0 ）
+  
+  max_vel_theta: 1.0      # 最大旋转速度，略小于基座的功能
+  min_vel_theta: -0.01    # 当平移速度可以忽略时的最小角速度
+  theta_stopped_vel: 0.1  # 当旋转速度小于这个值，就让机器人停止
+  acc_lim_theta: 6.0      # 旋转的加速度上限
+
+  # 目标容差参数
+  yaw_goal_tolerance: 0.1         # 目标航向容差
+  xy_goal_tolerance: 0.05         # 目标xy容差
+  latch_xy_goal_tolerance: false  # 到达目标容差范围后，停止移动，只旋转调整航向
+
+  # 向前模拟参数
+  sim_time: 1.7       # 模拟时间，默认值 1.7
+  vx_samples: 3       # x方向速度采样数，默认值 3
+  vy_samples: 1       # 差分驱动机器人y方向速度采样数，只有一个样本
+  vtheta_samples: 20  # 旋转速度采样数，默认值 20
+
+  # 轨迹评分参数
+  path_distance_bias: 32.0  # 靠近全局路径的权重，默认值 32.0
+  goal_distance_bias: 24.0  # 接近导航目标点的权重，默认值 24.0
+  occdist_scale: 0.01       # 控制器避障的权重，默认值 0.01
+  forward_point_distance: 0.325 # 从机器人到评分点的位置，默认值 0.325
+  stop_time_buffer: 0.2     # 在碰撞前机器人必须停止的时间长度，留出缓冲空间，默认值 0.2
+  scaling_speed: 0.25       # 缩放机器人速度的绝对值，默认值 0.25
+  max_scaling_factor: 0.2   # 机器人足迹在高速时能缩放的最大系数，默认值 0.2
+
+  # 防振动参数
+  oscillation_reset_dist: 1.05 # 重置振动标志前需要行进的距离，默认值 0.05
+
+  # 辅助调试选项
+  publish_traj_pc : true      # 是否在 RViz 里发布轨迹
+  publish_cost_grid_pc: true  # 是否在 RViz 里发布代价网格
+  global_frame_id: odom       # 基础坐标系
+
+  # 差分驱动机器人配置
+  holonomic_robot: false # 是否全向移动机器人
+```
+
+
+
+更详细的参数查看 ROS Index：dwa_local_planner 进入wiki 查看2.2 节，对照该说明，修改上面的参数。
+
+
+
+但是每修改一次就重启一下 launch 文件不是很方便
+
+另起终端运行：
+
+```
+rosrun rqt_reconfigure rqt_reconfigure
+```
+
+![image-20240416162056352](b站机器人工匠阿杰笔记.assets/image-20240416162056352.png)

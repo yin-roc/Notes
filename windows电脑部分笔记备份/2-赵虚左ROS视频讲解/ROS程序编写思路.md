@@ -158,6 +158,16 @@ int main(int argc, char *argv[])
 
 #### 1、发布者(msg)
 
+==tips：==
+
+在 vsocde 的c_cpp_properties.json 中的includePath 添加自定义 msg 文件路径：
+
+```
+/home/yin-roc/1-Github/Ubuntu20.04-VMware/workspace/ros_ws/ROS_demo_ws/devel/include/**
+```
+
+
+
 1. 新建 msg 目录并添加文件 .msg
 
 2. 配置 package.xml 文件：
