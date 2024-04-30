@@ -2245,7 +2245,8 @@ DWA的轨迹生成：通过对机器人运动的矢量运动和旋转运动选�
 2、终端运行仿真环境 gazebo 和 rviz 显示
 
 ```
-
+roslaunch wpr_simulation wpb_stage_robocup.launch
+roslaunch nav_pkg nav.launch 
 ```
 
 3、rviz中添加如下显示
@@ -2361,4 +2362,146 @@ DWAPlannerROS:
 rosrun rqt_reconfigure rqt_reconfigure
 ```
 
-![image-20240416162056352](b站机器人工匠阿杰笔记.assets/image-20240416162056352.png)
+<img src="b站机器人工匠阿杰笔记.assets/image-20240416162056352.png" alt="image-20240416162056352" style="zoom: 67%;" />
+
+
+
+### TEB 规划器
+
+`Timed Elastic Band`：时间弹力带
+
+弹力带：障碍物对路线产生斥力：
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240430162910230.png" alt="image-20240430162910230" style="zoom:50%;" />
+
+
+
+时间：机器人根据速度和加速度预测未来的连续几个时间单位机器人会运动到哪个位置，这里每个时间的间隔是相等的。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240430163007173.png" alt="image-20240430163007173" style="zoom:50%;" />
+
+
+
+观看图中发现有类似于上面的箭头。
+
+<img src="b站机器人工匠阿杰笔记.assets/image-20240430210236301.png" alt="image-20240430210236301" style="zoom: 50%;" />
+
+
+
+TEB 有更好的脱困能力
+
+TEB在倒车时类似于如下黄色路径，走弧线倒车，而不是原地旋转，即使转弯半径为 0。更适合阿克曼。
+
+![image-20240430210459065](b站机器人工匠阿杰笔记.assets/image-20240430210459065.png)
+
+实际运行：
+
+1、修改 nav_pkg 中的 nav.launch 的局部规划器选择为 teb_local_planner：
+
+```
+<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+<rosparam command="load" file="$(find wpb_home_tutorials)/nav_lidar/teb_local_planner_params.yaml"/>   
+```
+
+2、终端运行：
+
+```
+roslaunch wpr_simulation wpb_stage_robocup.launch
+roslaunch nav_pkg nav.launch 
+```
+
+
+
+参数设置参考 `wpb_home/wpb_home_tutorials/nav_lidar/teb_local_planner_params.yaml`;
+
+内容如下：
+
+```yaml
+TebLocalPlannerROS:
+ odom_topic: odom
+
+ # 策略相关
+ teb_autosize: True  # 是否允许改变轨迹的时域长度，也就是改变 dt_ref
+ dt_ref: 0.5         # 路径上的两个相邻姿态的默认距离
+ dt_hysteresis: 0.1  # 允许改变的时域解析度的浮动范围
+ global_plan_overwrite_orientation: True # 是否修正全局路径中的临时局部路径点的朝向
+ max_global_plan_lookahead_dist: 2.0     # 最大向前看距离
+ feasibility_check_no_poses: 2           #在判断生成的轨迹是否冲突时使用，此时设置为2，即从轨迹起点开始逐个检查轨迹上的2个点，若2个点均不发生碰撞，则认为本次轨迹有效。
+    
+ # 运动相关     
+ max_vel_x: 0.4           # 最大速度
+ max_vel_x_backwards: 0.2 # 最大倒车速度，设置为0或者负数将导致错误。减少倒车应该修改倒车权重，不改这里。
+ max_vel_theta: 1.0       # 最大转向角速度，跟 min_turning_radius 相关 (r = v / omega)
+ acc_lim_x: 0.5           # 最大线加速度
+ acc_lim_theta: 1.0       # 最大角加速度
+
+ # ********************** 转弯半径相关 ********************
+ min_turning_radius: 0.5         # 小转弯半径。如果设为 0，表示可以原地转弯。
+ wheelbase: 0.31                 # 只有在 cmd_angle_instead_rotvel为true时才有效
+ cmd_angle_instead_rotvel: False # 是否将收到的角速度消息转换为操作上的角度变化。设置成 True 时，话题 vel_msg.angular.z 内的数据是转轴角度。
+ # ********************************************************************
+
+# 车体轮廓
+ footprint_model: # types可选项: "point", "circular", "two_circles", "line", "polygon"
+   type: "circular"
+   # 对 type "circular" 有效的参数：
+   radius: 0.17
+   # 对 type "line" 有效的参数：        
+   line_start: [0.0, 0.0] 
+   line_end: [0.35, 0.0]
+   # 对 type "two_circles" 有效的参数：
+   front_offset: 0.35
+   front_radius: 0.35
+   rear_offset: 0.35
+   rear_radius: 0.35
+   # 对 type "polygon" 有效的参数：
+   vertices: [ [0.35, 0.0], [-0.2, -0.25], [0.2, -0.25]] 
+
+ # 到达目标点的判断容差   
+ xy_goal_tolerance: 0.2
+ yaw_goal_tolerance: 0.1
+    
+ # 障碍物相关 
+ min_obstacle_dist: 0.1  # 与障碍物的最小间距
+ inflation_dist: 0.4     # 障碍物膨胀距离
+ include_costmap_obstacles: True          # 是否检测动态障碍物
+ costmap_obstacles_behind_robot_dist: 1.0 # 身后多远距离内障碍物加入检测范围
+ obstacle_poses_affected: 25              # 障碍物对附近多少个关键点产生影响
+ costmap_converter_plugin: ""             # costmap_converter 插件名称，这里不使用
+
+ # 路径优化相关
+ no_inner_iterations: 3     # 图优化optimizer的迭代次数
+ no_outer_iterations: 3     # 外循环迭代次数
+ penalty_epsilon: 0.1       # 为所有的惩罚项增加一个小的安全余量
+ weight_max_vel_x: 2        # 平移速度的优化权重
+ weight_max_vel_theta: 1    # 角速度的优化权重
+ weight_acc_lim_x: 1        # 平移加速度的优化权重
+ weight_acc_lim_theta: 1    # 角加速度的优化重量
+ weight_kinematics_nh: 1000 # 非完整运动学的优化权重
+ weight_kinematics_forward_drive: 1 # 往前移动的权重
+ weight_optimaltime: 1      # 耗时权重
+ weight_obstacle: 50        # 与障碍物保持距离的权重
+
+ # 多线规划
+ enable_homotopy_class_planning: True # 激活多线规划
+ enable_multithreading: True          # 多线程计算
+ max_number_classes: 2                # 规划的路径线数上限
+ selection_cost_hysteresis: 1.0       # 路径轨迹入选的评价上限
+ selection_obst_cost_scale: 1.0       # 障碍物评价在入选标准中的缩放倍率
+ selection_alternative_time_cost: False # 时间成本是否要进行平方计算
+ roadmap_graph_no_samples: 15         # 为创建 roadmap graph 而生成的样本数
+ roadmap_graph_area_width: 5          # 关键点采样的宽度，单位为米。
+```
+
+
+
+==详见 ros wiki 搜索 teb_local_planner==
+
+调参需要看懂该网页一开始的论文；
+
+实施调参和 DWA 工具一样：
+
+```
+rosrun rqt_reconfigure rqt_reconfigure
+```
+
