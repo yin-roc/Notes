@@ -600,7 +600,7 @@ bash内嵌了诸多环境变量，⽤于定义bash的⼯作环境
 
 # 2	Shell变量
 
-## 01	趣谈 Shell 特殊参数变量
+## 01	趣谈 Shell 特殊==参数==变量
 
 ### 取出变量值
 
@@ -754,4 +754,900 @@ chao
 180
 180
 ```
+
+
+
+
+
+## 02	趣谈 Shell 特殊==状态==变量
+
+### 特殊状态变量  
+
+```bash
+$?	上⼀次命令执⾏状态返回值， 0正确，⾮0失败
+$$	当前shell脚本的进程号
+$!	上⼀次后台进程的PID
+$_	取得之前执⾏的命令传入的最后⼀个参数
+
+查找⽅式 man bash
+	搜索Special Parameters
+```
+
+
+
+### 脚本控制返回值  
+
+脚本控制返回值的玩法，脚本返回值，学习 shell 函数编程之后，才能彻底理解；
+
+这个脚本执行完毕了，会返回一个数字id，称之为返回值。
+
+
+
+示例脚本 `t1.sh`：
+
+如果输入的参数数目不是两个，则终止运行并返回状态码 119 给当前 shell 的 $? 变量；
+
+如果输入的参数数目正好是两个，则输出 ok；
+
+```sh
+#!/bin/bash
+
+# [] 里面输入前后都要有空格
+# $# 获取参数个数 	
+# -ne 不等于的情况
+# && 并且
+[ $# -ne 2 ] && {
+echo "must be two args"
+exit 119 #终⽌程序运⾏，且返回119状态码，提供给当前shell的$?变量，若是在函数⾥ 可以return 119⽤法
+}
+echo "没毛病，就是 2 个参数"
+```
+
+终端输入：
+
+```bash
+bash t1.sh yu chao 180
+```
+
+输出结果：
+
+<img src="Shell编程.assets/image-20240510143026630.png" alt="image-20240510143026630" style="zoom:50%;" />
+
+
+
+### 获取上一次后台执行的程序，PID，`$!` 获取
+
+怎么让程序后台执行
+
+格式：`xxx` 代表具体需要执行的命令
+
+```bash
+nohup xxx & 1> /dev/null
+```
+
+示例：
+
+终端输入：
+
+```bash
+nohup ping baidu.com & 1> /dev/null
+```
+
+输出结果：
+
+```bash
+[1] 21629
+```
+
+
+
+验证：
+
+终端输入：
+
+```bash
+ps -ef|grep ping
+```
+
+输出结果：
+
+```bash
+root 21629 20999 0 15:46 pts/0 00:00:00 ping baidu.com
+```
+
+也可以使用 `$!`:
+
+终端输入：
+
+```bash
+echo $!
+```
+
+输出结果：
+
+```bash
+21629
+```
+
+
+
+### $$	当前shell脚本的进程号  
+
+示例脚本：t2.sh
+
+```bash
+#! /bin/bash
+echo '---特殊变量 $0 $1 $2 ..的实践'
+echo '结果： ' $0 $1 $2
+
+echo '#####################'
+echo '---特殊变量$# 获取参数总个数'
+echo '结果： ' $#
+
+echo '#####################'
+echo '---特殊变量$* 实践'
+echo '结果： ' $*
+
+echo '#####################'
+
+echo '---特殊变量$@ 实践'
+echo '结果： ' $@
+
+echo "当前脚本执⾏的进程号： $$"
+```
+
+终端输入：
+
+```bash
+bash t2.sh yu chao 180
+```
+
+输出结果：
+
+<img src="Shell编程.assets/image-20240510144819507.png" alt="image-20240510144819507" style="zoom:50%;" />
+
+
+
+### $_	获取之前执⾏的命令的最后⼀个参数  
+
+<img src="Shell编程.assets/image-20240510144925935.png" alt="image-20240510144925935" style="zoom:67%;" />
+
+
+
+## 03	几个简单内置 Shell 命令 （Shell 子串）
+
+### bash 一些基础的内置命令
+
+```bash
+echo
+eval
+exec
+export
+read
+shift
+```
+
+
+
+#### echo命令
+
+```
+-n	不换⾏输出内容
+-e	解析转义字符
+
+\n	换⾏
+\r	回⻋
+\t	tab 四个空格
+\b	退格
+\v	纵向制表符
+```
+
+
+
+示例：
+
+```bash
+# -n 的用法：取消了 echo 自带的换行
+yin-roc@yinroc-virtual-machine:~$ echo chaoge;echo cc
+chaoge
+cc
+yin-roc@yinroc-virtual-machine:~$ echo -n chaoge;echo cc
+chaogecc
+yin-roc@yinroc-virtual-machine:~$ echo chaoge;echo -n cc
+chaoge
+ccyin-roc@yinroc-virtual-machine:~$ echo -n chaoge;echo -n cc
+chaogeccyin-roc@yinroc-virtual-machine:~$
+```
+
+
+
+```bash
+# -e 的用法：解析转义字符
+yin-roc@yinroc-virtual-machine:~$ echo "我看你\n挺好的"
+我看你\n挺好的
+yin-roc@yinroc-virtual-machine:~$ echo -e "我看你\n挺好的"
+我看你
+挺好的
+
+# printf 的用法：能够自动识别其中的转义字符
+yin-roc@yinroc-virtual-machine:~$ printf "我看你\n挺好的"
+我看你
+挺好的yin-roc@yinroc-virtual-machine:~$ 
+```
+
+
+
+#### eval：执⾏多个命令  
+
+```bash
+[root@chaogelinux shell_program]# eval ls;cd /tmp
+```
+
+
+
+#### exec：不创建⼦进程，执⾏该命令， exec执⾏后⾃动exit  
+
+```bash
+[root@chaogelinux learnshell]# exec date
+2020年 05⽉ 26⽇ 星期⼆ 17:28:03 CST
+Connection to pyyuc closed.
+```
+
+如果在子 Shell 里面，则会输出结果，并退回到父 Shell
+
+
+
+## 04	变量子串的语法介绍
+
+⼦串就是⼀个完整字符串的⼀部分，通过shell特有语法截取：
+
+```bash
+${变量}					返回变量值
+${#变量}					返回变量⻓度，字符⻓度
+${变量:start}				返回变量 start 数值之后的字符，且包含 start 的数字
+${变量:start:length} 		提取 start 之后的length限制的字符
+${变量#word} 			 	从变量开头删除最短匹配的word⼦串
+${变量##word} 			从变量开头，删除最⻓匹配的word
+${变量%word} 				从变量结尾删除最短的word
+${变量%%word} 			从变量结尾开始删除最⻓匹配的word
+${变量/pattern/string} 	⽤string代替第⼀个匹配的pattern
+${变量//pattern/string} 	⽤string代替所有的pattern
+```
+
+
+
+## 05	子串玩法一
+
+> Shell 截取字符串通常有两种⽅式：
+>
+> 从指定位置开始截取 和 从指定字符（⼦字符串）开始截取。
+>
+> 从指定位置开始截取：
+>
+> 这种⽅式需要两个参数：除了指定起始位置，还需要截取长度，才能最终确定要截取的字符串。
+>
+> 既然需要指定起始位置，那么就涉及到计数⽅向的问题，到底是从字符串左边开始计数，还是从字符串右边开始计数。答案是 Shell 同时⽀持两种计数⽅式。
+>
+> 1. 从字符串左边开始计数
+>
+> 	如果想从字符串的左边开始计数，那么截取字符串的具体格式如下： 
+>
+> 	${string: start :length}
+>
+> 	其中， string 是要截取的字符串， start 是起始位置（从左边开始，从 0 开始计数），length 是要截取的长度（省略的话表示直到字符串的末尾）
+
+
+
+示例：
+
+```bash
+yin-roc@yinroc-virtual-machine:~$ echo $name
+
+yin-roc@yinroc-virtual-machine:~$ name="yuchao180"
+yin-roc@yinroc-virtual-machine:~$ echo $name
+yuchao180
+yin-roc@yinroc-virtual-machine:~$ echo ${name}
+yuchao180
+yin-roc@yinroc-virtual-machine:~$ echo ${#name}
+9
+
+# 截取子串的用法
+yin-roc@yinroc-virtual-machine:~$ echo ${name:3}
+hao180
+yin-roc@yinroc-virtual-machine:~$ echo ${name:5}
+o180
+
+# 设置起点，以及元素长度
+yin-roc@yinroc-virtual-machine:~$ echo ${name:2:4}
+chao
+```
+
+
+
+## 06	统计变量子串的长度
+
+多种统计长度的命令
+
+统计命令执行速度
+
+```bash
+$ echo $name
+yuchao180
+$ echo $name | wc -l
+1
+$ echo $name | wc -L
+9
+
+
+# 解释 wc 命令参数用法
+# -l：输出总共行数
+# -L：输出最长一行的长度
+$ vim test1.txt
+$ cat test1.txt 
+12345
+1234567
+12345678
+$ cat test1.txt | wc -l
+3
+$ cat test1.txt | wc -L
+8
+
+# 利用数值计算 expr 命令
+$ expr length "${name}"
+9
+
+# awk统计长度，length函数
+yin-roc@yinroc-virtual-machine:~/1-Github/Ubuntu20.04-VMware/workspace/Shell_ws$ echo "${name}" | awk '{print length($0)}'
+9
+
+# 最快的统计方式
+$ echo ${#name}
+9
+```
+
+
+
+## 07	统计命令执行的时长
+
+### for 命令
+
+打印出⼀个指定了分隔符的1～100的序列  :
+
+```bash
+for num in {1..100} // 循环次数
+do	// do后执行循环的内容
+	echo $num
+done
+```
+
+写在一行的方法：
+
+```bash
+$ for num in {1..100};do echo $num;done
+```
+
+
+
+### seq 的用法
+
+- `seq -s` 指定分隔符，默认为换行符
+
+- `seq -s ":" 5`  
+
+```bash
+$ seq 5
+1
+2
+3
+4
+5
+
+$ seq -s ":" 5
+1:2:3:4:5
+```
+
+
+
+```bash
+`` 和 '' 的区别：
+# 反引号用于命令替换，即执行引号中包含的命令，并将命令的输出作为结果返回；
+# 单引号用于字面量字符串，即引号内的内容被原样对待，不进行任何形式的替换或扩展。使用单引号时，变量、命令替换、转义字符等都不会被处理
+```
+
+```bash
+$ for num in {1..3};do str1='seq -s ":" 10';echo $str1;done
+seq -s ":" 10
+seq -s ":" 10
+seq -s ":" 10
+ 
+$ for num in {1..3};do str1=`seq -s ":" 10`;echo $str1;done
+1:2:3:4:5:6:7:8:9:10
+1:2:3:4:5:6:7:8:9:10
+1:2:3:4:5:6:7:8:9:10
+```
+
+
+
+`echo ${#char}`：输出字符串 `char` 的长度
+
+`&>/dev/null`：把所有输出（标准输出和标准错误）重定向到 `/dev/null`，即丢弃这些输出。
+
+```bash
+$ time for n in {1..10000};do char=`seq -s "chaoge" 100`;echo ${#char} &>/dev/null;done
+
+real	0m11.051s	// 实际运行时间
+user	0m7.009s	// 用户态执行的时间
+sys	0m4.511s		// 内核态执行的时间
+
+# 计算速度很慢，管道符和 wc -L
+# 使用 wc -L 命令计算时间
+$ time for n in {1..10000};do char=`seq -s "chaoge" 100`;echo ${char}|wc -L &>/dev/null;done
+
+real	0m52.188s
+user	0m24.170s
+sys	0m47.331s
+
+# expr命令的length函数统计
+$ time for n in {1..10000};do char=`seq -s "chaoge" 100`;expr length "${char}" &>/dev/null;done
+
+real	0m21.255s
+user	0m13.533s
+sys	0m8.510s
+
+# 最后的awk加工处理
+$ time for n in {1..10000};do char=`seq -s "chaoge" 100`;echo ${char}|awk '{print length($0)}' &>/dev/null;done
+
+real	1m9.616s
+user	0m31.228s
+sys	1m5.285s
+
+```
+
+shell编程，尽量使用 linux 内置的命令，内置的操作，和内置的函数 ，效率最高 c 语言开发，效率最高，尽可能减少管道符的操作
+
+
+
+## 08	详解字符串截取
+
+### 基本语法
+
+```bash
+# 	从开头删除匹配最短
+## 	从开头删除匹配最⻓
+% 	从结尾删除匹配最短
+%% 	从结尾删除匹配最⻓
+
+# 指定字符内容截取
+a*c 匹配开头为a，中间任意个字符，结尾为c的字符串
+a*C 匹配开头为a，中间任意个字符，结尾为C的字符串
+
+#语法
+name="yuchao" # 该变量的值，有索引，分别是从 0， 1， 2， 3， 4开始
+
+${变量} 				   返回变量值
+${#name} 		 		返回变量⻓度，字符⻓度--------
+${变量:start} 		   返回变量start数值之后的字符，且包含start的数字
+${变量:start:length} 	   提取start之后的length限制的字符 ，例如${name:4:1}
+${变量#word} 			   从变量开头删除最短匹配的word⼦串 ${name:yu}
+${变量##word} 		   从变量开头，删除最⻓匹配的word
+${变量%word} 			   从变量结尾删除最短的word
+${变量%%word} 		   从变量结尾开始删除最⻓匹配的word
+
+替换
+${变量/pattern/string} 	⽤string代替第⼀个匹配的pattern
+${变量//pattern/string} 	⽤string代替所有的pattern
+```
+
+
+
+实际练习：
+
+```bash
+$ # 提取start之后的length限制的字符
+$ name="I am chaoge"
+$ echo $name 
+I am chaoge
+$ echo ${name:2:2} 
+am
+$ echo ${name:3:5} 
+m cha
+
+
+$ # 删除匹配到的子串
+$ name2="abcABC123ABCabc"
+$ # 从开头匹配字符删除
+$ echo ${name2}
+abcABC123ABCabc
+$ echo ${name2#a*c}
+ABC123ABCabc
+$ echo ${name2}
+abcABC123ABCabc
+$ echo ${name2##a*c}
+
+
+$ # 利用 % 形式，从后向前匹配截取
+$ echo ${name2}
+abcABC123ABCabc
+$ echo ${name2%a*c}
+abcABC123ABC
+$ echo ${name2%%a*c}
+
+$ echo ${name2%%a*C}
+abcABC123ABCabc
+
+
+$ # 替换字符串
+$ str1="Hello,man,i am your brother."
+$ echo str1
+str1
+$ echo $str1
+Hello,man,i am your brother.
+$ # ⼀个 / 替换匹配第⼀个合适的字符串
+$ echo ${str1/man/boy}
+Hello,boy,i am your brother.
+
+$ # 多次匹配替换
+$ # 两个//，匹配所有的合适的字符串
+$ echo ${str1}
+Hello,man,i am your brother.
+$ echo ${str1/o/O}
+HellO,man,i am your brother.
+$ # 替换所有的o为⼤写O
+$ echo ${str1//o/O}
+HellO,man,i am yOur brOther.
+```
+
+
+
+## 09	批量修改文件名
+
+{1..5} 的作用：
+
+```
+在 Linux 命令行中，{1..5} 是 Brace Expansion（大括号展开）语法的一种，用于生成一个范围内的序列。在这种情况下，{1..5} 会生成从 1 到 5 的数值序列：1、2、3、4、5。
+```
+
+```bash
+$ touch chaochao_{1..5}_finished.jpg
+$ touch chaochao_{1..5}_finished.png
+$ ls
+chaochao_1_finished.jpg  chaochao_2_finished.png  chaochao_4_finished.jpg  chaochao_5_finished.png
+chaochao_1_finished.png  chaochao_3_finished.jpg  chaochao_4_finished.png
+chaochao_2_finished.jpg  chaochao_3_finished.png  chaochao_5_finished.jpg
+$ # 去掉所有文件的_finished字符信息
+$ # 思路
+$ # 1.单个文件去掉这个字符
+$ mv chaochao_1_finished.jpg chaochao_1.jpg
+$ ls
+chaochao_1_finished.png  chaochao_2_finished.jpg  chaochao_3_finished.jpg  chaochao_4_finished.jpg  chaochao_5_finished.jpg
+chaochao_1.jpg           chaochao_2_finished.png  chaochao_3_finished.png  chaochao_4_finished.png  chaochao_5_finished.png
+
+
+$ # 2.利用变量的子串功能，去掉后缀
+$ f=chaochao_
+chaochao_1_finished.png  chaochao_2_finished.jpg  chaochao_3_finished.jpg  chaochao_4_finished.jpg  chaochao_5_finished.jpg
+chaochao_1.jpg           chaochao_2_finished.png  chaochao_3_finished.png  chaochao_4_finished.png  chaochao_5_finished.png
+
+$ f=chaochao_1
+chaochao_1_finished.png  chaochao_1.jpg     
+
+$ f=chaochao_1_finished.png 
+$ echo ${f}
+chaochao_1_finished.png
+
+$ echo ${f//_finished/}
+chaochao_1.png
+$ echo ${f/_finished/}
+chaochao_1.png
+$ echo ${f}
+chaochao_1_finished.png
+
+
+$ # 3.利用变量的反引号功能，取得命令执行的结果
+$ echo `date`
+2024年 05月 16日 星期四 17:42:41 CST
+$ # 利用变量的反引号功能，修改文件名字
+$ echo $f
+chaochao_1_finished.png
+$ mv $f `echo ${f//_finished/}`
+$ ls
+chaochao_1.jpg  chaochao_2_finished.jpg  chaochao_3_finished.jpg  chaochao_4_finished.jpg  chaochao_5_finished.jpg
+chaochao_1.png  chaochao_2_finished.png  chaochao_3_finished.png  chaochao_4_finished.png  chaochao_5_finished.png
+
+
+$ # 4.批量修改文件名，值修改所有的jpg文件
+$ ls *.jpg
+chaochao_1.jpg  chaochao_2_finished.jpg  chaochao_3_finished.jpg  chaochao_4_finished.jpg  chaochao_5_finished.jpg
+$ ls *fin*.jpg
+chaochao_2_finished.jpg  chaochao_3_finished.jpg  chaochao_4_finished.jpg  chaochao_5_finished.jpg
+$ echo `ls *fin*.jpg`
+chaochao_2_finished.jpg chaochao_3_finished.jpg chaochao_4_finished.jpg chaochao_5_finished.jpg
+
+# 去掉剩下来的所有jpg文件的_finished字符
+$ for file_name in `ls *fin*.jpg`;do echo $file_name;done
+chaochao_2_finished.jpg
+chaochao_3_finished.jpg
+chaochao_4_finished.jpg
+chaochao_5_finished.jpg
+$ for file_name in `ls *fin*jpg`;do mv $file_name `echo ${file_name//_finished/}`;done
+$ ls -l
+总用量 0
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_1.jpg
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_1.png
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_2_finished.png
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_2.jpg
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_3_finished.png
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_3.jpg
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_4_finished.png
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_4.jpg
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_5_finished.png
+-rw-rw-r-- 1 yin-roc yin-roc 0 5月  16 17:37 chaochao_5.jpg
+
+```
+
+
+
+## 10	特殊 shell 扩展变量
+
+语法
+
+parameter，参数，范围  
+
+1. 如果 parameter 变量值为空，返回 word 字符串，赋值给 result 变量：
+
+	```bash
+	result=${parameter:-word}
+	```
+
+2. 如果 para 变量为空，则word替代变量值，且返回其值:
+
+	```bash
+	result=${parameter:=word}
+	```
+
+	两者的区别：
+
+	![image-20240517143130416](Shell编程.assets/image-20240517143130416.png)
+
+3. 如果 para 变量为空， word 当作 stderr 输出，否则输出变量值⽤于设置变量为空导致错误时，返回的错误信息：
+
+	```bash
+	${parameter:?word}
+	```
+
+4.   如果 para 变量为空，什么都不做，否则 word 返回  
+
+	```bash
+	${parameter:+word}
+	```
+
+
+
+实际案例：
+
+> :-   
+>
+> 判断变量如果值为空，就返回后面的字符信息，可以通过 result 变量去接收
+
+```bash
+$ # 当chaoge没有值， heihei被返回，赋值给result
+$ result=${chaoge:-heiheihei}
+$ echo chaoge
+chaoge
+$ # 要注意的是，此时chaoge还是空
+$ echo $chaoge
+
+$ echo $result 
+heiheihei
+$
+$ # 情况2，当chaoge变量有值时，该特殊扩展变量的符号，也就不起作用了
+$ chaoge="180"
+$ result2=${chaoge:-heiheihei}
+$ echo $chaoge
+180
+$ echo $result2
+180
+```
+
+
+
+> := 
+>
+> 如果变量为空，后面的值，赋值给接收者，以及变量本身
+
+```bash
+$ # 变量为空
+$ echo $chaoge $result
+
+$ result=${chaoge:=apple}
+$ echo $result;echo $chaoge 
+apple
+apple
+$ # 变量有值的情况
+$ echo $chaoge 
+apple
+$ res=${chaoge:=xigua}
+$ echo $chaoge $res
+apple apple
+$ echo $chaoge;echo $res
+apple
+apple
+```
+
+stderr 2 stdout 1??
+
+
+
+> :?
+>
+> 当变量值为空的时候，主动抛出错误信息
+
+```bash
+echo ${new_name}
+
+$ # 默认错误
+$ echo ${new_name:?}
+bash: new_name：参数为空或未设置
+$ echo ${new_name:?该变量值为空}
+bash: new_name: 该变量值为空
+$ # 变量有值，则不做处理
+$ new_name="chaodi"
+$ echo ${new_name:?该变量值为空}
+chaodi
+```
+
+
+
+> :+
+>
+> 当变量为空，什么事都不做，否则字符串返回给接收者
+
+```bash
+$ echo ${result:+heihei}
+
+$ result="下课休息，辛苦大家了"
+$ echo ${result:+超哥你真棒}
+超哥你真棒
+$ result=${result:+超哥你真棒}
+$ echo $result
+超哥你真棒
+```
+
+
+
+应用场景
+
+```bash
+$ cat del_data.sh
+find ${path:=/tmp} -name '*.tar.gz' -type f -mtime +7|xargs rm -f
+# 上述就对path变量做了处理，否则如果path变量为定义，命令就会报错
+# 有误的脚本，未指定path的路径，就会在当前⽬录删除，程序就有了歧义， bug
+$ cat del_data.sh
+find ${path} -name '*.tar.gz' -type f -mtime +7|xargs rm -f
+```
+
+
+
+# 3	shell 基础知识
+
+## 01	为什么需要父子 shell
+
+<img src="Shell编程.assets/image-20240520140044646.png" alt="image-20240520140044646" style="zoom:50%;" />
+
+1. source和点，执行脚本，只在当前的 shell 环境中执行生效；
+2. 指定 bash sh 解释器运行脚本，是开启 subshell，开启子 shell 运行脚本命令
+3. `./script`，都会指定shebang，通过解释器运行，也是开启subshell运行命令
+
+
+
+### 父 shell 的概念
+
+pstree看到如下结果，就是父 shell 环境
+
+```bash
+pstree
+|-sshd--sshd-bash-pstree
+```
+
+ps进程管理命令，查看
+
+```bash
+ps -ef
+-f 	显示UID，PID，PPID
+-e	列出所有进程的信息，如同-A选项option
+
+# 通过一条命令，检查父子shell的关系
+ps -ef --forest
+```
+
+<img src="Shell编程.assets/image-20240520141518895.png" alt="image-20240520141518895" style="zoom:50%;" />
+
+
+
+### 子 shell 的具体概念
+
+<img src="Shell编程.assets/image-20240520142245601.png" alt="image-20240520142245601" style="zoom: 50%;" />
+
+
+
+
+
+### 多个子 shell
+
+<img src="Shell编程.assets/image-20240520142638511.png" alt="image-20240520142638511" style="zoom:50%;" />
+
+只要输入 exit，就能够退出子shell环境了
+
+
+
+### 为什么学习子shell
+
+<img src="Shell编程.assets/image-20240520145502573.png" alt="image-20240520145502573" style="zoom: 67%;" />
+
+
+
+### 创建进程列表（创建子shell）
+
+需要执行一系列的 shell 命令
+
+```bash
+ls ;cd ;pwd ;echo "奥利给"
+```
+
+
+
+列表，肯定是被包围起来的数据
+
+> shell 的进程列表理念，需要使用（）小括号，如下执行方式，就称之为：进程列表 
+>
+> 加上小括号，就是开启子shell运行命令
+
+```bash
+(cd ~;pwd ;ls ;cd /tmp/;pwd;ls)
+```
+
+
+
+### 检测是否在子 shell 环境中
+
+> linux 默认的有关 shell 的变量
+>
+> 该变量的值特点，如果是 0，就是在当前 shell 环境中执行的，否则就是开辟子 shell 去运行的BASH_SUBSHELL
+
+
+
+检测是否开启了子shell 运行命令
+
+```bash
+cd ~;pwd;ls ;cd /tmp/;pwd;ls;echo $BASH_SUBSHELL
+```
+
+明确开启子shell运行的命令
+
+进程列表，并且开启子shell 运行
+
+```bash
+(cd ~;pwd;ls ;cd /tmp/;pwd;ls;echO $BASH_SUBSHEL)
+```
+
+
+
+### 子shell嵌套执行
+
+刚才是一个小括号，开启一个子 shell 运行命令，还可以嵌套多个
+
+```bash
+$ (pwd;echo $BASH_SUBSHELL)
+/home/yin-roc
+1
+$ (pwd;(echo $BASH_SUBSHELL))
+/home/yin-roc
+2
+$ (pwd;(pwd;(echo $BASH_SUBSHELL)))
+/home/yin-roc
+/home/yin-roc
+3
+```
+
+利用括号，开启子 shell 的理念，以及检查，在 shell 脚本开发中，经常会用子 shell 进行多进程的处理提高程序并发执行效率。
 
