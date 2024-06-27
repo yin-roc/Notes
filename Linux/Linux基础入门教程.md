@@ -987,3 +987,657 @@ Is the information correct? [Y/n] y
 > 另外我们也可以使用其他方式来检验，首先在 `/home`目录中会出现一个和用户名同名的目录，这就是新创建的用户的家目录，另外我们还可以查看 `/etc/passwd`文件，里边记录着新添加的用户的更加详细的信息:
 
 ![image-20210125223933023](Linux基础入门教程.assets/image-20210125223933023.png)
+
+
+
+## day05
+
+### 30、删除用户
+
+> 删除用户并不是将`/home`下的用户家目录删除就完事儿了, 我们需要使用`userdle`命令才能删除用户在系统中的用户ID和所属组ID等相关信息，`但是需要注意的是在某些Linux版本中用户虽然被删除了， 但是它的家目录却没有被删除，需要我们手动将其删除。`
+
+```shell
+# 删除用户, 添加参数 -r 就可以一并删除用户的家目录了
+$ sudo userdel 用户名 -r
+
+# 删除用户 lisi
+$ sudo userdel lisi -r
+
+# 使用deluser不能添加参数-r, 家目录不能被删除, 需要使用 rm 命令删除用户的家目录, 比如:
+$ sudo rm /home/用户名 -r
+```
+
+==通用删除用户命令==：`sudo userdel 用户名 -r`
+
+> 由于Linux的版本很多,，删除用户对应的操作指令不是唯一的，经测试在 `CentOS 版本只支持 userdel命令`，在`Ubuntu中既支持 userdel 也支持 deluser命令`。
+
+
+
+### 31、添加和删除用户组
+
+> 默认情况下, 只要创建新用户就会得到一个同名的用户组, 并且这个用户属于这个组。一般情况下不需要创建新的用户组，如果有需求可以使用 `groupadd`添加用户组, 使用 `groupdel`删除用户组。
+>
+> 由于普通用户没有添加删除用户组权限，因此需要在管理员（root）用户下操作，或者在普通用户下借助管理员权限完成该操作。
+
+#### 创建用户组
+
+```shell
+# 基于普通用户创建新的用户组
+$ sudo groupadd 组名
+```
+
+验证用户组是否创建成功：
+
+法1：
+
+```shell
+# 验证新的用户组是否创建成功
+$ sudo chgrp 组名 要修改组别的文件名
+# 查看其组名是否被修改
+$ ll 要修改组别的文件名
+```
+
+法2：
+
+可以查看 `/etc/group`文件，里边有用户组相关的信息：
+
+![image-20210125231604926](Linux基础入门教程.assets/image-20210125231604926.png)
+
+
+
+#### 删除用户组
+
+```shell
+# 基于普通用户删除已经存在的用户组
+$ sudo groupdel 组名
+```
+
+> 在Ubuntu中添加删除用户组可以使用 `addgroup/groupadd` 和 `delgroup/groupdel`
+>
+> 在CentOS中添加和删除用户只能使用 `groupadd` 和 `groupdel`
+>
+> 我们只需要通过 `which 命令名` 查看，就能知道该Linux版本是不是支持使用该命令了。
+
+
+
+### 32、修改密码
+
+> Linux中设置用户密码和修改用户密码的方式是一样的, 修改用户密码又分几种情况: `修改当前用户密码`, `普通用户A修改其他普通用户密码`, `普通用户A修改root用户密码`, `root用户修改普通用户密码`。修改密码需要使用`passwd`命令。当创建了一个普通用户却没有提示指定密码, 或者忘记了用户密码都可以通过该命令来实现自己重置密码的需求。
+
+- 当前用户修改自己的密码, 默认是有权限操作的
+- 当前普通用户修改其他用户密码, 默认没有权限, 需要借助管理员权限才能完成操作
+- 当前普通用户修改root用户密码, 默认没有权限, 需要借助管理员权限才能完成操作
+- root用户修改其他普通用户密码, 默认有权限, 可以直接修改
+
+```shell
+# passwd
+# 修改当前用户
+$ passwd
+
+# 修改非当前用户密码
+$ sudo passwd 用户名
+
+# 修改root
+$ sudo passwd root
+```
+
+> 通过以上介绍的相关命令我们可以知道，如果让一个普通用户可以使用管理员权限执行一些指令其实是非常危险的的， 因此普通用户默认是没有使用 `sudo`的权限的, 必须授权才能使用，工作场景中授权操作一定要慎重，要三思。
+
+
+
+### 33、使用tar工具进行压缩和解压缩
+
+ 在Linux操作系统中默认自带两个原始的压缩工具分别是 `gzip`和`bzip2`, 但是它们都有先天的缺陷, `不能打包压缩文件, 每个文件都会生成一个单独的压缩包, 并且压缩之后不会保留原文件`， 这是一件叔能忍婶也不能忍的事情。
+
+Linux中自带一个打包工具，叫做`tar`, 默认情况下该工具是不能进行压缩操作的，在这种情况下`tar`和`gzip`, `bzip2`就联姻了, 各自发挥各自的优势, Linux下最强大的打包压缩工具至此诞生。
+
+我们在使用`tar`进行压缩和解压缩的时候, 只需要指定相对用的参数, 在其内部就会调用对应的压缩工具`gzip`或者`bzip2`完成指定的操作。
+
+#### 压缩
+
+> 如果使用`tar`完成文件压缩, 涉及的参数如下, 在使用过程中参数没有先后顺序:
+
+- `c`: 创建压缩文件
+- `z`: 使用`gzip`的方式进行文件压缩
+- `j`: 使用`bzip2`的方式进行文件压缩
+- `v`: 压缩过程中显示压缩信息, 可以省略不写
+- `f`: 指定压缩包的名字
+
+> 一般认为 `.tgz` 文件就等同于 `.tar.gz` 文件, 因此它们的压缩方式是相同的。
+
+```shell
+# 语法: 
+$ tar 参数 生成的压缩包的名字 要压缩的文件(文件或者目录)
+
+# 备注: 关于生成的压缩包的名字, 建议使用标准后缀, 方便识别:
+	- 压缩使用 gzip 方式,  标准后缀格式为: .tar.gz
+	- 压缩使用 bzip2 方式, 标准后缀格式为: .tar.bz2	
+```
+
+
+
+> 举例: 使用`gzip`的方式进行文件压缩
+
+```shell
+# 查看目录内容
+# ls
+get  onepiece.txt  robin.txt
+
+# 压缩目录中所有文件, 如果要压缩某几个文件, 直接指定文件名即可
+# tar zcvf all.tar.gz *
+get/                     # ....... 压缩信息
+get/link.lnk             # ....... 压缩信息
+get/onepiece/            # ....... 压缩信息
+get/onepiece/haha.txt
+get/link.txt
+onepiece.txt
+robin.txt
+
+# 查看目录文件, 多了一个压缩文件 all.tar.gz
+# ls
+all.tar.gz  get  onepiece.txt  robin.txt
+```
+
+
+
+> 举例: 使用`bzip2`的方式进行文件压缩
+
+```shell
+# 查看目录内容
+# ls
+all.tar.gz  get  onepiece.txt  robin.txt
+
+# 压缩目录中除 all.tar.gz 的文件和目录
+# tar jcvf part.tar.bz2 get onepiece.txt robin.txt 
+get/                   # ....... 压缩信息
+get/link.lnk           # ....... 压缩信息
+get/onepiece/          # ....... 压缩信息
+get/onepiece/haha.txt
+get/link.txt
+onepiece.txt
+robin.txt
+
+# 查看目录信息, 多了一个压缩文件 part.tar.bz2
+# ls
+all.tar.gz  get  onepiece.txt  part.tar.bz2  robin.txt
+```
+
+
+
+#### 解压缩
+
+> 如果使用`tar`进行文件的解压缩, 涉及的参数如下, 在使用过程中参数没有先后顺序:
+
+- `x`: 释放压缩文件内容
+- `z`: 使用`gzip`的方式进行文件压缩, 压缩包后缀为`.tar.gz`
+- `j`: 使用`bzip2`的方式进行文件压缩, 压缩包后缀为`.tar.bz2`
+- `v`: 解压缩过程中显示解压缩信息
+- `f`: 指定压缩包的名字
+
+
+
+> 举例: 使用`gzip`的方式进行文件解压缩
+
+```shell
+# 查看目录文件信息
+# ls
+all.tar.gz  get  onepiece.txt  part.tar.bz2  robin.txt  temp
+
+# 将 all.tar.gz 压缩包解压缩到 temp 目录中
+# tar zxvf all.tar.gz -C temp
+get/                      # 解压缩文件信息
+get/link.lnk              # 解压缩文件信息
+get/onepiece/             # 解压缩文件信息
+get/onepiece/haha.txt     # 解压缩文件信息
+get/link.txt
+onepiece.txt
+robin.txt
+
+# 查看temp目录内容, 都是从压缩包中释放出来的
+# ls temp/
+get  onepiece.txt  robin.txt
+```
+
+
+
+> 举例: 使用`bzip2`的方式进行文件解压缩
+
+```shell
+# 删除 temp 目录中的所有文件
+# rm temp/* -rf
+
+# 查看 luffy 目录中的文件信息
+# ls
+all.tar.gz  get  onepiece.txt  part.tar.bz2  robin.txt  temp
+
+# 将 part.tar.bz2 中的文件加压缩到 temp 目录中
+# tar jxvf part.tar.bz2 -C temp
+get/                         # 解压缩文件信息
+get/link.lnk                 # 解压缩文件信息
+get/onepiece/                # 解压缩文件信息
+get/onepiece/haha.txt        # 解压缩文件信息
+get/link.txt
+onepiece.txt
+robin.txt
+
+# 查看 temp 目录中的文件信息
+# ls temp/
+get  onepiece.txt  robin.txt
+```
+
+
+
+### 34、使用zip unzip工具进行压缩和解压缩
+
+> zip格式的压缩包在Linux中也是很常见的, 在某些版本中需要安装才能使用
+>
+> [给普通用于添加sudo权限](https://subingwen.cn/linux/sudoers/)
+
+- Ubuntu
+
+```shell
+$ sudo apt install zip    	# 压缩
+$ sudo apt install unzip	# 解压缩
+```
+
+- CentOS
+
+```shell
+# 因为 centos 可以使用 root 用户登录, 基于 root 用户安装软件, 不需要加 sudo
+$ sudo yum install zip    	# 压缩
+$ sudo yum install unzip	# 解压缩
+```
+
+#### 压缩（zip）
+
+> 使用`zip`压缩目录需要注意一点, 必须要添加参数 `-r`, 这样才能将子目录中的文件一并压缩, 如果要压缩的文件中没有目录, 该参数就可以不写了。
+>
+> 另外使用`zip`压缩文件, 会自动生成文件后缀`.zip`, 因此就不需要额外指定了。
+
+```shell
+# 语法: 后自动添加压缩包后缀 .zip, 如果要压缩目录, 需要添加参数 r
+# 不加参数 r 不会压缩子目录
+$ zip [-r]  压缩包名 要压缩的文件
+```
+
+> 举例:
+
+```shell
+# 查看目录文件信息
+# ls
+get  onepiece.txt  robin.txt  temp
+
+# 压缩目录 get 和文件 onepiece.txt robin.txt 得到压缩包 all.zip(不需要指定后缀, 自动添加)
+# zip all onepiece.txt robin.txt get/ -r
+  adding: onepiece.txt (stored 0%)
+  adding: robin.txt (stored 0%)
+  adding: get/ (stored 0%)
+  adding: get/link.lnk (stored 0%)             # 子目录中的文件也被压缩进去了
+  adding: get/onepiece/ (stored 0%)            # 子目录中的文件也被压缩进去了
+  adding: get/onepiece/haha.txt (stored 0%)    # 子目录中的文件也被压缩进去了
+  adding: get/link.txt (stored 0%)             # 子目录中的文件也被压缩进去了
+  
+# 查看目录文件信息, 多了一个压缩包文件 all.zip
+# ls
+all.zip  get  onepiece.txt  robin.txt  temp
+```
+
+
+
+#### 解压缩（unzip）
+
+> 对应`zip`格式的文件解压缩, 必须要使用`unzip`命令, 和压缩的时候使用的命令是不一样的。如果压缩包中的文件要解压到指定目录需要指定参数`-d`, 默认是解压缩到当前目录中。
+
+```shell
+# 语法1: 解压到当前目录中 
+$ unzip 压缩包名
+
+# 语法: 解压到指定目录, 需要添加参数 -d
+$ unzip 压缩包名 -d 解压目录
+```
+
+> 举例
+
+```shell
+# 查看目录文件信息
+# ls
+all.zip  get  onepiece.txt  robin.txt  temp
+
+# 删除 temp 目录中的所有文件
+# rm temp/* -rf
+
+# 将 all.zip 解压缩到 temp 目录中
+# unzip all.zip -d temp/
+Archive:  all.zip
+ extracting: temp/onepiece.txt           # 释放压缩的子目录中的文件            
+ extracting: temp/robin.txt              # 释放压缩的子目录中的文件            
+   creating: temp/get/
+ extracting: temp/get/link.lnk       
+   creating: temp/get/onepiece/
+ extracting: temp/get/onepiece/haha.txt  # 释放压缩的子目录中的文件
+ extracting: temp/get/link.txt      
+ 
+# 查看 temp 目录中的文件信息 
+# ls temp/
+get  onepiece.txt  robin.txt
+```
+
+
+
+## day06
+
+### 35、使用 rar 工具进行压缩和解压缩
+
+> `rar`这种压缩格式在Linux中并不常用, 这是Windows常用的压缩格式, 如果想要在Linux压缩和解压这种格式的文件需要额外安装对应的工具, 不同版本的Linux安装方式也是不同的。
+
+- Ubuntu
+
+	```shell
+	# 执行在线下载命令即可
+	$ sudo apt install rar
+	```
+
+- CentOS
+
+	```shell
+	# 需要下载安装包, 官方地址: https://www.rarlab.com/download.htm
+	# 从下载页面找到 Linux 版本的下载链接并复制链接地址, 使用 wget 下载到本地
+	$ wget https://www.rarlab.com/rar/rarlinux-x64-6.0.0.tar.gz
+	
+	# 将下载得到的 rarlinux-x64-6.0.0.tar.gz 压缩包解压缩, 得到解压目录 rar
+	$ tar zxvf rarlinux-x64-6.0.0.tar.gz 
+	
+	# 将得到的解压目录移动到 /opt 目录中 (因为/opt软件安装目录, 移动是为了方便管理, 不移动也没事儿)
+	# 该操作需要管理员权限, 我是使用 root 用户操作的
+	$ mv ./rar /opt
+	
+	# 给 /opt/rar 目录中的可执行程序添加软连接, 方便命令解析器可以找到该压缩命令
+	$ ln -s /opt/rar/rar /usr/local/bin/rar
+	$ ln -s /opt/rar/unrar /usr/local/bin/unrar
+	```
+
+	> 该方法在任何版本的Linux系统中都适用
+
+
+
+#### 压缩 (.rar)
+
+> 使用 `rar` 压缩过程中的注意事项和 `zip` 是一样的，`如果压缩的是目录，需要指定参 -r`，如果只压缩文件就不需要添加了。压缩过程中需要使用参数 `a (archive)`，压缩归档的意思。
+>
+> `rar` 工具在生成压缩包的时候也会自动添加后缀，名字为 `.rar`，因此我们只需要指定压缩包的名字。
+
+```shell
+# 文件压缩, 需要使用参数 a, 压缩包名会自动添加后缀 .rar
+# 如果压缩了目录, 需要加参数 -r
+# 语法: 
+$ rar a 压缩包名 要压缩的文件 [-r]
+
+# 举例
+# 查看目录文件信息
+[root@VM-8-14-centos ~/luffy]# ls
+get  onepiece.txt  robin.txt  temp
+
+# 压缩文件 onepiece.txt, robin.txt 和目录 get/ 到要是文件 all.rar 中
+[root@VM-8-14-centos ~/luffy]# rar a all onepiece.txt get/ robin.txt -r 
+
+RAR 6.00   Copyright (c) 1993-2020 Alexander Roshal   1 Dec 2020
+Trial version             Type 'rar -?' for help
+
+Evaluation copy. Please register.
+
+Creating archive all.rar
+
+Adding    onepiece.txt                     OK 
+Adding    get/link.lnk                     OK        # 子目录中的文件也被压缩了 
+Adding    get/onepiece/haha.txt            OK        # 子目录中的文件也被压缩了
+Adding    get/link.txt                     OK        # 子目录中的文件也被压缩了  
+Adding    robin.txt                        OK 
+Adding    get/onepiece                     OK         
+Done
+[root@VM-8-14-centos ~/luffy]# ls
+all.rar  get  onepiece.txt  robin.txt  temp
+```
+
+
+
+#### 解压缩 (.rar)
+
+> 解压缩 `.rar` 格式的文件的时候，可以使用 `rar` 也可以使用 `unrar`，操作方式是一样的，需要添加参数 `x` ，默认是将压缩包内容释放到当前目录中，如果要释放到指定目录直接指定解压目录名即可，不需要使用任何参数。
+
+```shell
+# 解压缩: 需要参数 x
+# 语法: 解压缩到当前目录中
+$ rar/unrar x 压缩包名字
+
+# 语法: 解压缩到指定目录中
+rar/unrar x 压缩包名字 解压目录
+```
+
+
+
+举例：
+
+```shell
+# 查看目录文件信息
+[root@VM-8-14-centos ~/luffy]# ls
+all.rar  get  onepiece.txt  robin.txt  temp
+
+# 删除 temp 目录中的所有文件
+[root@VM-8-14-centos ~/luffy]# rm temp/* -rf
+
+# 将 all.rar 中的文件解压缩到 temp 目录中
+[root@VM-8-14-centos ~/luffy]# rar x all.rar temp/ 
+
+RAR 6.00   Copyright (c) 1993-2020 Alexander Roshal   1 Dec 2020
+Trial version             Type 'rar -?' for help
+
+
+Extracting from all.rar
+
+Extracting  temp/onepiece.txt               OK 
+Creating    temp/get                        OK
+Extracting  temp/get/link.lnk               OK          # 子目录文件也被释放出来了
+Extracting  temp/get/link.lnk               OK          # 子目录文件也被释放出来了
+Extracting  temp/get/link.lnk               OK          # 子目录文件也被释放出来了
+Creating    temp/get/onepiece               OK                    
+Extracting  temp/get/link.lnk               OK          # 子目录文件也被释放出来了 
+Extracting  temp/get/link.lnk               OK          # 子目录文件也被释放出来了 
+Extracting  temp/get/onepiece/haha.txt      OK
+Extracting  temp/get/link.txt               OK 
+Extracting  temp/robin.txt                  OK 
+All OK
+
+# 查看 temp 目录中文件信息
+[root@VM-8-14-centos ~/luffy]# ls temp/
+get  onepiece.txt  robin.txt
+```
+
+
+
+### 36、使用 rar 工具进行压缩和解压缩
+
+> `.xz ` 格式的文件压缩和解压缩都相对比较麻烦，通过一个命令是完不成对应的操作的，需要通过两步操作才行。并且操作过程中需要使用 `tar` 工具进行打包，压缩使用的则是 `xz` 工具。
+
+
+
+#### 压缩（.tar.xz)
+
+> 创建文件的步骤如下, 首先 将需要压缩的文件打包 `tar cvf xxx.tar files`，然后再对打包文件进行压缩 `xz -z xxx.tar`，这样我们就可以得到一个打包之后的压缩文件了。
+>
+> 使用 `xz`工具压缩文件的时候需要添加参数 `-z`。
+
+```shell
+# 语法:
+# 第一步
+$ tar cvf xxx.tar 要压缩的文件
+# 第二步, 最终得到一个xxx.tar.xz 格式的压缩文件
+$ xz -z xxx.tar
+```
+
+举例：
+
+```shell
+# 查看目录文件信息
+[root@VM-8-14-centos ~/luffy]# ls
+get  onepiece.txt  robin.txt  temp
+
+# 将文件 onepiece.txt, robin.txt 和目录 get 打包到 all.tar 中
+[root@VM-8-14-centos ~/luffy]# tar cvf all.tar onepiece.txt robin.txt get/
+onepiece.txt
+robin.txt
+get/
+get/link.lnk
+get/onepiece/
+get/onepiece/haha.txt
+get/link.txt
+
+# 查看目录文件信息, 多了一个打包文件 all.tar
+[root@VM-8-14-centos ~/luffy]# ls
+all.tar  get  onepiece.txt  robin.txt  temp
+
+# 使用 xz 工具压缩打包文件 all.tar
+[root@VM-8-14-centos ~/luffy]# xz -z all.tar 
+
+# 最终得到了压缩之后的打包文件 all.tar.xz
+[root@VM-8-14-centos ~/luffy]# ls
+all.tar.xz  get  onepiece.txt  robin.txt  temp
+```
+
+
+
+#### 解压缩(.tar.xz)
+
+> 解压缩的步骤和压缩的步骤相反，需要先解压缩，然后将文件包中的文件释放出来。
+>
+> 使用 `xz` 工具解压需要使用参数 `-d`。
+
+
+
+```shell
+# 语法:
+# 第一步： 压缩包解压缩, 得到 xxx.tar
+$ xz -d xxx.tar.xz
+# 第二步: 将 xxx.tar 中的文件释放到当前目录
+$ tar xvf xxx.tar 	
+```
+
+举例：
+
+```shell
+# 查看目录中文件信息, 有一个 all.tar.xz
+[root@VM-8-14-centos ~/luffy]# ls
+all.tar.xz  get  onepiece.txt  robin.txt  temp
+
+# 将 all.tar.xz 解压缩, 得到 all.tar
+[root@VM-8-14-centos ~/luffy]# xz -d all.tar.xz 
+
+# 查看目录文件, 得到了 all.tar
+[root@VM-8-14-centos ~/luffy]# ls
+all.tar  get  onepiece.txt  robin.txt  temp
+
+# 释放 all.tar 到当前目录
+[root@VM-8-14-centos ~/luffy]# tar xvf all.tar 
+onepiece.txt
+robin.txt
+get/
+get/link.lnk
+get/onepiece/
+get/onepiece/haha.txt
+get/link.txt
+```
+
+
+
+### 37、xz 格式的文件的压缩和解压缩
+
+> `.xz` 格式的文件压缩和解压缩都相对比较麻烦，通过一个命令是完不成对应的操作的，需要通过两步操作才行。并且操作过程中需要使用 `tar` 工具进行打包，压缩使用的则是 `xz` 工具。
+
+#### 1、压缩（.tar.xz)
+
+> 创建文件的步骤如下，首先将需要压缩的文件打包 `tar cvf xxx.tar files`，然后再对打包文件进行压缩 `xz -z xxx.tar`，这样我们就可以得到一个打包之后的压缩文件了。
+>
+> 使用 `xz` 工具压缩文件的时候需要添加参数 `-z`
+>
+
+```shell
+# 语法:
+# 第一步
+$ tar cvf xxx.tar 要压缩的文件
+# 第二步, 最终得到一个xxx.tar.xz 格式的压缩文件
+$ xz -z xxx.tar
+```
+
+
+
+> 举例
+
+```shell
+# 查看目录文件信息
+# ls
+get  onepiece.txt  robin.txt  temp
+
+# 将文件 onepiece.txt, robin.txt 和目录 get 打包到 all.tar 中
+# tar cvf all.tar onepiece.txt robin.txt get/
+onepiece.txt
+robin.txt
+get/
+get/link.lnk
+get/onepiece/
+get/onepiece/haha.txt
+get/link.txt
+
+# 查看目录文件信息, 多了一个打包文件 all.tar
+# ls
+all.tar  get  onepiece.txt  robin.txt  temp
+
+# 使用 xz 工具压缩打包文件 all.tar
+# xz -z all.tar 
+
+# 最终得到了压缩之后的打包文件 all.tar.xz
+# ls
+all.tar.xz  get  onepiece.txt  robin.txt  temp
+```
+
+
+
+#### 2、解压缩(.tar.xz)
+
+> 解压缩的步骤和压缩的步骤相反，需要先解压缩，然后将文件包中的文件释放出来。
+>
+> 使用 `xz` 工具解压需要使用参数 `-d`。
+
+```shell
+# 语法:
+# 第一步： 压缩包解压缩, 得到 xxx.tar
+$ xz -d xxx.tar.xz
+# 第二步: 将 xxx.tar 中的文件释放到当前目录
+$ tar xvf xxx.tar 			
+```
+
+
+
+> 举例
+
+```shell
+# 查看目录中文件信息, 有一个 all.tar.xz
+# ls
+all.tar.xz  get  onepiece.txt  robin.txt  temp
+
+# 将 all.tar.xz 解压缩, 得到 all.tar
+# xz -d all.tar.xz 
+
+# 查看目录文件, 得到了 all.tar
+# ls
+all.tar  get  onepiece.txt  robin.txt  temp
+
+# 释放 all.tar 到当前目录
+# tar xvf all.tar 
+onepiece.txt
+robin.txt
+get/
+get/link.lnk
+get/onepiece/
+get/onepiece/haha.txt
+get/link.txt
+```
+
